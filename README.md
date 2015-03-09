@@ -5,7 +5,7 @@ Wrap a controlled react component, to allow spcific prop/handler pairs to be unc
 ## Install
 
 ```sh
-npm i -S uncontrolled-component
+npm i -S uncontrollable
 ```
 
 
@@ -39,7 +39,10 @@ Uncontrollable allows you serperate out the logic necessary to create controlled
 ```js
     var uncontrollable =  require('uncontrollable');
 
-    var UncontrollableMyInput = uncontrollable(MyInput, /* define the pairs ->*/ { value: 'onChange' })
+    var UncontrollableMyInput = uncontrollable(
+        MyInput, 
+        /* define the pairs ->*/ 
+        { value: 'onChange' })
 
     <UncontrollableMyInput defaultValue={4} /> // this will just work!
 ```
