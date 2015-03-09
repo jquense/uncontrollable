@@ -18,12 +18,21 @@ function customPropType(handler, propType) {
   }
 }
 
+var version = React.version.split('.').map(parseFloat);
+
+function getType(component){
+  if( version[0] === 0 && version[1] >= 13)
+    return component
+
+  return component.type
+}
+
 module.exports = function(Component, controlledValues, taps) {
     var types = {}
 
-    if ( process.env.NODE_ENV !== 'production' && Component.type.propTypes ) {
+    if ( process.env.NODE_ENV !== 'production' && getType(Component).propTypes ) {
       types = transform(controlledValues, function(obj, handler, prop){
-            var type = Component.type.propTypes[prop];
+            var type = getType(Component).propTypes[prop];
 
             invariant(typeof handler === 'string' && handler.trim().length,
               'Uncontrollable - [%s]: the prop `%s` needs a valid handler key name in order to make it uncontrollable', Component.displayName, prop)

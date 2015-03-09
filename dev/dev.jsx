@@ -1,14 +1,13 @@
 'use strict';
 var React = require('react');
-var invariant = require('react/lib/invariant');
-var uncontrolledInput = require('../src/uncontrolled-input')
+var uncontrolledInput = require('../src/uncontrollable')
 
 var App = React.createClass({
 
   render: function() {
     var Simple = uncontrolledInput(Component, { value: 'onChange' })
 
-    var WithTaps = uncontrolledInput(Component, { value: 'onChange', label: '' }, { 
+    var WithTaps = uncontrolledInput(Component, { value: 'onChange' }, { 
       onChange: function(){
         this.setState({ label: 'hello'})
       }
