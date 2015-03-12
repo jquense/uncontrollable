@@ -35,7 +35,9 @@ module.exports = function(Component, controlledValues, taps) {
             var type = getType(Component).propTypes[prop];
 
             invariant(typeof handler === 'string' && handler.trim().length,
-              'Uncontrollable - [%s]: the prop `%s` needs a valid handler key name in order to make it uncontrollable', Component.displayName, prop)
+                'Uncontrollable - [%s]: the prop `%s` needs a valid handler key name in order to make it uncontrollable'
+              , Component.displayName
+              , prop)
 
             obj[prop] = customPropType(handler, type)
             obj[defaultKey(prop)] = type
@@ -61,7 +63,7 @@ module.exports = function(Component, controlledValues, taps) {
 
       shouldComponentUpdate() {
         //let the setState trigger the update
-        return !this._notifying || !this._notifying.length;
+        return !this._notifying;
       },
 
       render() {
@@ -92,7 +94,7 @@ module.exports = function(Component, controlledValues, taps) {
 
       if( this.props[handler] ) {
         this._notifying = true
-        this.props[handler].apply(this, [value, ...args])
+        this.props[handler].call(this, value, ...args)
         this._notifying = false
       }
         
@@ -115,8 +117,8 @@ function defaultKey(key){
 
 function chain(thisArg, a, b){
   return function chainedFunction(...args){
-    a && a.apply(thisArg, [...args])
-    b && b.apply(thisArg, [...args])
+    a && a.call(thisArg, ...args)
+    b && b.call(thisArg, ...args)
   }
 }
 

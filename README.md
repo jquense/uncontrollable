@@ -9,7 +9,7 @@ npm i -S uncontrollable
 ```
 
 
-### use
+### Use
 
 Take the following simple component and essentially mimic how React inputs already work.
 
@@ -47,6 +47,4 @@ Uncontrollable allows you serperate out the logic necessary to create controlled
     <UncontrollableMyInput defaultValue={4} /> // this will just work!
 ```
 
-The above is a contrived example but it allows you to wrap even more complex Components, giving you a lot of flexibiltity in the API you can offer a consumer of your Component. 
-
-[React Widgets](https://github.com/jquense/react-widgets) makes heavy use of this strategy, you can see it in action here: https://github.com/jquense/react-widgets/blob/master/src/Multiselect.jsx#L408
+The above is a contrived example but it allows you to wrap even more complex Components, giving you a lot of flexibiltity in the API you can offer a consumer of your Component. For every pair of prop/handlers you also get a defaultProp of the form "default[PropName]" so `value` -> `defaultValue`, and `open` -> `defaultOpen`, etc. [React Widgets](https://github.com/jquense/react-widgets) makes heavy use of this strategy, you can see it in action here: https://github.com/jquense/react-widgets/blob/master/src/Multiselect.jsx#L408
