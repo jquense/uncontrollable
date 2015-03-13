@@ -53,7 +53,7 @@ One of the strengths of React is its extensibility model, enabled by a common pr
     )
   }
 ```
-This pattern moves the responsibility of managing the `value` from the input to its parent and mimics "two-way" databinding. Sometimes, however, there is no need for the parent to manage the input's state directly. Then all we need is "one-way" databinding, in which case all we want to do is set the initial `value` of the input and let the input manage it from then on. React deals with this through "uncontrolled" inputs, where if you don't indicate that you want to control the state of the input externally via a `value` prop it will just do the book keeping for you.
+This pattern moves the responsibility of managing the `value` from the input to its parent and mimics "two-way" databinding. Sometimes, however, there is no need for the parent to manage the input's state directly. In that case, all we want to do is set the initial `value` of the input and let the input manage it from then on. React deals with this through "uncontrolled" inputs, where if you don't indicate that you want to control the state of the input externally via a `value` prop it will just do the book keeping for you.
 
 This is a great pattern which we can make use of in our own Components. It is often best to build each component to be as stateless as possible, assuming that the parent will want to control everything that makes sense. Take a simple Dropdown component as an example
 
