@@ -1,6 +1,6 @@
 # uncontrollable
 
-Wrap a controlled react component, to allow spcific prop/handler pairs to be uncontrolled. Uncontrollable allows you to write pure react components, with minimal state, and then wrap them in a component that will manage state for prop/handlers if they are excluded.
+Wrap a controlled react component, to allow specific prop/handler pairs to be omited by Component consumers. Uncontrollable allows you to write pure react components, with minimal state, and then wrap them in a component that will manage state for prop/handlers if they are excluded.
 
 ## Install
 
