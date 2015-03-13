@@ -10,7 +10,7 @@ npm i -S uncontrollable
 
 ### API
 
-If you are a bit unsure on the _why_ of this module skip to the next section first.
+If you are a bit unsure on the _why_ of this module read the next section first. If you just want to see some real-world example, check out [React Widgets](https://github.com/jquense/react-widgets) which makes [heavy use of this strategy](https://github.com/jquense/react-widgets/blob/master/src/Multiselect.jsx#L410).
 
 require the module: `var uncontrollable = require('uncontrollable')`
 
@@ -72,7 +72,7 @@ var SimpleDropdown = React.createClass({
       <div>
         <input 
           value={this.props.value} 
-          onChange={ e => this.props.onChange(e.value)}
+          onChange={ e => this.props.onChange(e.target.value)}
         />
         <button onClick={ e => this.props.onToggle(!this.props.open)}>
           open
@@ -89,11 +89,11 @@ var SimpleDropdown = React.createClass({
 });
 ```
 
-Notice how we don't track any state in our simple dropdown? This is great because a consumer of our module will have the all the flexibility to decide what the behaviour of the dropdown should be. Also notice our public API (propTypes), it consists of a property we want set: `value`, `open` and a set of handlers that indicate _when_ we want them set: `onChange`, `onToggle`. It is up to the parent component to change the `value` and `open` props in response to the handlers.
+Notice how we don't track any state in our simple dropdown? This is great because a consumer of our module will have the all the flexibility to decide what the behavior of the dropdown should be. Also notice our public API (propTypes), it consists of common pattern: a property we want set (`value`, `open`), and a set of handlers that indicate _when_ we want them set (`onChange`, `onToggle`). It is up to the parent component to change the `value` and `open` props in response to the handlers.
 
 While this pattern offers a excellent amount of flexibility to our consumers it also requires them to write a bunch of boilerplate code that probably won't change much from use to use. In all likelihood they will always want to set `open` in response to `onToggle`, and only in rare cases, want to override that behavior. This is where our controlled/uncontrolled pattern comes in. 
 
-We want to just handle the open/onToggle case ourselves if the consumer doesn't provide a `open` prop (indicating that they want to control it). Rather than complicating our dropdown component will all that logic that just obsures the business logic of our widget, we can add it later, by taking our dropdown and wrapping it inside another component that handles that for us.
+We want to just handle the open/onToggle case ourselves if the consumer doesn't provide a `open` prop (indicating that they want to control it). Rather than complicating our dropdown component will all that logic obsuring the business logic of our dropdown, we can add it later, by taking our dropdown and wrapping it inside another component that handles that for us.
 
 `uncontrollable` allows you seperate out the logic necessary to create controlled/uncontrolled inputs letting you focus on creating a completely controlled input and wrapping it later. This tends to be a lot simplier to reason about as well.
 
