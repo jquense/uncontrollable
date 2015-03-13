@@ -33,8 +33,8 @@ For ever prop you indicate as uncontrollable, the returned component will also a
           searchTerm: 'onSearch' //the current typed value (maybe it filters the dropdown list)
         },
         {
-          'onToggle': function (){
-            if ( this.props.searchTerm === undefined ) // if the consumer is not controlling searchTerm
+          'onToggle': function (isOpen){
+            if ( !isOpen && this.props.searchTerm === undefined ) // if the consumer is not controlling searchTerm
               this.setState({ searchTerm: '' }) // reset the filter on close
           }
         })
