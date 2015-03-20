@@ -40,7 +40,9 @@ module.exports = function(Component, controlledValues, taps) {
               , prop)
 
             obj[prop] = customPropType(handler, type)
-            obj[defaultKey(prop)] = type
+            if(type !== undefined ) {
+              obj[defaultKey(prop)] = type;
+            }
           }, {});
     }
 
