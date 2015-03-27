@@ -93,9 +93,9 @@ Notice how we don't track any state in our simple dropdown? This is great becaus
 
 While this pattern offers a excellent amount of flexibility to our consumers it also requires them to write a bunch of boilerplate code that probably won't change much from use to use. In all likelihood they will always want to set `open` in response to `onToggle`, and only in rare cases, want to override that behavior. This is where our controlled/uncontrolled pattern comes in. 
 
-We want to just handle the open/onToggle case ourselves if the consumer doesn't provide a `open` prop (indicating that they want to control it). Rather than complicating our dropdown component will all that logic obsuring the business logic of our dropdown, we can add it later, by taking our dropdown and wrapping it inside another component that handles that for us.
+We want to just handle the open/onToggle case ourselves if the consumer doesn't provide a `open` prop (indicating that they want to control it). Rather than complicating our dropdown component with all that logic obsuring the business logic of our dropdown, we can add it later, by taking our dropdown and wrapping it inside another component that handles that for us.
 
-`uncontrollable` allows you seperate out the logic necessary to create controlled/uncontrolled inputs letting you focus on creating a completely controlled input and wrapping it later. This tends to be a lot simplier to reason about as well.
+`uncontrollable` allows you separate out the logic necessary to create controlled/uncontrolled inputs letting you focus on creating a completely controlled input and wrapping it later. This tends to be a lot simplier to reason about as well.
 
 ```js
     var uncontrollable =  require('uncontrollable');
