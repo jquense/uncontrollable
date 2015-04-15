@@ -10,7 +10,7 @@ npm i -S uncontrollable
 
 ### API
 
-If you are a bit unsure on the _why_ of this module read the next section first. If you just want to see some real-world example, check out [React Widgets](https://github.com/jquense/react-widgets) which makes [heavy use of this strategy](https://github.com/jquense/react-widgets/blob/master/src/Multiselect.jsx#L410).
+If you are a bit unsure on the _why_ of this module read the next section first. If you just want to see some real-world example, check out [React Widgets](https://github.com/jquense/react-widgets) which makes [heavy use of this strategy](https://github.com/jquense/react-widgets/blob/master/src/Multiselect.jsx#L418).
 
 require the module: `var uncontrollable = require('uncontrollable')`
 
