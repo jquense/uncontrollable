@@ -2,7 +2,7 @@
 var React = require('react')
 var invariant = require('react/lib/invariant')
 
-function customPropType(handler, propType) {
+function customPropType(handler, propType, name) {
 
   return function(props, propName, componentName, location) {
 
@@ -10,10 +10,10 @@ function customPropType(handler, propType) {
       if ( !props[handler] )
         return new Error(
             'You have provided a `' + propName + '` prop to ' 
-          + '`' + componentName + '` without an `' + handler + '` handler. This will render a read-only field. ' 
+          + '`' + name + '` without an `' + handler + '` handler. This will render a read-only field. ' 
           + 'If the field should be mutable use `' + defaultKey(propName) + '`. Otherwise, set `' + handler + '`')
 
-      return propType && propType(props, propName, componentName, location)
+      return propType && propType(props, propName, name, location)
     }
   }
 }
@@ -28,7 +28,8 @@ function getType(component){
 }
 
 module.exports = function(Component, controlledValues, taps) {
-    var types = {}
+    var name = Component.displayName || Component.name || 'Component'
+      , types = {}
 
     if ( process.env.NODE_ENV !== 'production' && getType(Component).propTypes ) {
       types = transform(controlledValues, function(obj, handler, prop){
@@ -39,18 +40,20 @@ module.exports = function(Component, controlledValues, taps) {
               , Component.displayName
               , prop)
 
-            obj[prop] = customPropType(handler, type)
+            obj[prop] = customPropType(handler, type, Component.displayName)
             if(type !== undefined ) {
               obj[defaultKey(prop)] = type;
             }
           }, {});
     }
 
+    name = name[0].toUpperCase() + name.substr(1)
+
     taps = taps || {}
 
     return React.createClass({
 
-      displayName: Component.displayName,
+      displayName: `Uncontrolled${name}`,
 
       propTypes: types,
 

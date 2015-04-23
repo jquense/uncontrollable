@@ -58,9 +58,16 @@ describe('uncontrollable', () =>{
   it('should create defaultProp propTypes', () => {
     var Control  = uncontrol(Base, { value: 'onChange' })
 
+    Control.displayName.should.equal('UncontrolledBase')
+  })
+
+  it('should adjust displayName', () => {
+    var Control  = uncontrol(Base, { value: 'onChange' })
+
     Control.propTypes.should.have.property('defaultValue')
       .that.equals(Base.propTypes.value)
   })
+
 
   it('should track state if no specified', () => {
     var Control  = uncontrol(Base, { value: 'onChange' })
