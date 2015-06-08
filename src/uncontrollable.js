@@ -27,6 +27,13 @@ function getType(component){
   return component.type
 }
 
+function getLinkName(name){
+  return name === 'value' 
+    ? 'valueLink' 
+    : name === 'checked' 
+      ? 'checkedLink' : null
+}
+
 module.exports = function(Component, controlledValues, taps) {
     var name = Component.displayName || Component.name || 'Component'
       , types = {}
@@ -72,42 +79,56 @@ module.exports = function(Component, controlledValues, taps) {
       },
 
       render() {
-        var props = {};
+        var newProps = {}
+          , { 
+            valueLink
+          , checkedLink
+          , ...props} = this.props;
 
-        each(controlledValues, (handle, prop) => {
-            
-          props[prop] = isProp(this.props, prop) 
-            ? this.props[prop] 
-            : this.state[prop] 
+        each(controlledValues, (handle, propName) => {
+          var linkPropName = getLinkName(propName)
+            , prop = this.props[propName];
 
-          props[handle] = setAndNotify.bind(this, prop)
+          if ( linkPropName && !isProp(this.props, propName) && isProp(this.props, linkPropName) ) {
+            prop = this.props[linkPropName].value
+          }
+
+          newProps[propName] = prop !== undefined 
+            ? prop 
+            : this.state[propName] 
+
+          newProps[handle] = setAndNotify.bind(this, propName)
         })
 
-        props = { ...this.props, ...props}
+        newProps = { ...props, ...newProps }
 
+        //console.log('props: ', newProps)
         each(taps, (val, key) => 
-          props[key] = chain(this, val, props[key]))
+          newProps[key] = chain(this, val, newProps[key]))
           
-        return React.createElement(Component, props);
+        return React.createElement(Component, newProps);
       }
     })
 
-    function setAndNotify(prop, value, ...args){
-      var handler    = controlledValues[prop]
-        , controlled = handler && isProp(this.props, prop)
-        , args;
+    function setAndNotify(propName, value, ...args){
+      var linkName = getLinkName(propName)
+        , handler    = this.props[controlledValues[propName]];
+        //, controlled = handler && isProp(this.props, propName);
 
-      if( this.props[handler] ) {
+      if ( linkName && isProp(this.props, linkName) && !handler ) {
+        handler = this.props[linkName].requestChange
+        //propName = propName === 'valueLink' ? 'value' : 'checked'
+      }
+
+      if( handler ) {
         this._notifying = true
-        this.props[handler].call(this, value, ...args)
+        handler.call(this, value, ...args)
         this._notifying = false
       }
         
-      this.setState({
-        [prop]: value
-      })
+      this.setState({ [propName]: value })
 
-      return !controlled
+      //return !controlled
     }
 
     function isProp(props, prop){

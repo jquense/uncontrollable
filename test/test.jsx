@@ -19,10 +19,11 @@ describe('uncontrollable', () =>{
     Base = React.createClass({
 
       propTypes: {
-        value: React.PropTypes.number,
+        value:    React.PropTypes.number,
+        checked:  React.PropTypes.bool,
         onChange: React.PropTypes.func,
 
-        open: React.PropTypes.bool,
+        open:     React.PropTypes.bool,
         onToggle: React.PropTypes.func,
       },
 
@@ -33,9 +34,13 @@ describe('uncontrollable', () =>{
             { this.props.open && 
               <span className='open'>open!</span>
             }
-            <input 
+            <input className='valueInput'
               value={this.props.value} 
               onChange={ e => this.props.onChange(e.value)}/>
+            <input type='checkbox'
+              value={this.props.value}
+              checked={this.props.checked}
+              onChange={ e => this.props.onChange(e.checked)}/>
           </div>)
       }
     })
@@ -55,6 +60,32 @@ describe('uncontrollable', () =>{
       warn.restore()
   })
 
+  it('should work with valueLink', () => {
+    var changeSpy = sinon.spy()
+      , Control  = uncontrol(Base, { value: 'onChange' })
+      , instance = render(<Control valueLink={{ value: 10, requestChange: changeSpy }} />)
+      , input = findAllTag(instance, 'input')[0]
+    
+    input.getDOMNode().value.should.equal('10')
+
+    trigger.change(input.getDOMNode(), { value: 42 })
+
+    changeSpy.should.have.been.calledOnce.and.calledWith(42)
+  })
+
+  it('should work with checkedLink', () => {
+    var changeSpy = sinon.spy()
+      , Control  = uncontrol(Base, { checked: 'onChange' })
+      , instance = render(<Control checkedLink={{ value: false, requestChange: changeSpy }} />)
+      , input = findAllTag(instance, 'input')[1]
+    
+    input.getDOMNode().checked.should.equal(false)
+
+    trigger.change(input.getDOMNode(), { checked: true })
+
+    changeSpy.should.have.been.calledOnce.and.calledWith(true)
+  })
+
   it('should create defaultProp propTypes', () => {
     var Control  = uncontrol(Base, { value: 'onChange' })
 
@@ -72,7 +103,7 @@ describe('uncontrollable', () =>{
   it('should track state if no specified', () => {
     var Control  = uncontrol(Base, { value: 'onChange' })
       , instance = render(<Control />)
-      , input = findTag(instance, 'input')
+      , input = findAllTag(instance, 'input')[0]
     
     trigger.change(input.getDOMNode(), { value: 42})
 
@@ -83,7 +114,7 @@ describe('uncontrollable', () =>{
   it('should allow for defaultProp', () => {
     var Control  = uncontrol(Base, { value: 'onChange', open: 'onToggle' })
       , instance = render(<Control defaultValue={10} defaultOpen />)
-      , input = findTag(instance, 'input')
+      , input = findAllTag(instance, 'input')[0]
       , span = findClass(instance, 'open')
     
     input.getDOMNode().value.should.equal('10')
@@ -100,7 +131,7 @@ describe('uncontrollable', () =>{
         , onChange = sinon.spy()
         , Control  = uncontrol(Base, { value: 'onChange' }, { 'onChange': tap })
         , instance = render(<Control defaultValue={10} onChange={onChange}/>)
-        , input = findTag(instance, 'input');
+        , input = findAllTag(instance, 'input')[0];
 
       trigger.change(input.getDOMNode(), { value: 42 })
 
@@ -113,7 +144,7 @@ describe('uncontrollable', () =>{
       var tap = sinon.spy(function(){ this.should.equal(instance) })
         , Control  = uncontrol(Base, { value: 'onChange' }, { 'onChange': tap })
         , instance = render(<Control defaultValue={10}/>)
-        , input = findTag(instance, 'input');
+        , input = findAllTag(instance, 'input')[0];
 
       trigger.change(input.getDOMNode(), { value: 42 })
 

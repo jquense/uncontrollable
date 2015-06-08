@@ -35,6 +35,7 @@
     "gulp-plumber": "^0.6.6",
     "gulp-rename": "^1.2.0",
     "imports-loader": "^0.6.3",
+    "jq-release": "^0.6.1",
     "karma": "~0.12.23",
     "karma-mocha": "~0.1.9",
     "karma-mocha-reporter": "^0.3.1",
