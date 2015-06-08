@@ -54,3 +54,6 @@ gulp.task('dev', function() {
 })
 
 gulp.task('release', ['clean', 'less-compile', 'less-copy', 'transpile'])
+
+
+gulp.task('publish', ['release'], require('jq-release'))
