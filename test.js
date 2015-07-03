@@ -27,6 +27,8 @@ chai.use(require('sinon-chai'))
 
 chai.should();
 
+global.expect = chai.expect
+
 var testsContext = require.context("./test", true);
 
 testsContext.keys().forEach(testsContext);

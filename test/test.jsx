@@ -1,6 +1,7 @@
 'use strict';
 var React = require('react/addons')
 var uncontrol = require('../src/uncontrollable')
+var Layer = require('react-layer')
 
 var TestUtils = React.addons.TestUtils
   , render = TestUtils.renderIntoDocument
@@ -25,17 +26,23 @@ describe('uncontrollable', () =>{
 
         open:     React.PropTypes.bool,
         onToggle: React.PropTypes.func,
+
+        onRender: React.PropTypes.func,
       },
 
+
       render() {
+        if ( this.props.onRender )
+          this.props.onRender(this.props)
+
         return (
           <div>
             <button onClick={this.props.onToggle}>toggle</button>
-            { this.props.open && 
+            { this.props.open &&
               <span className='open'>open!</span>
             }
             <input className='valueInput'
-              value={this.props.value} 
+              value={this.props.value}
               onChange={ e => this.props.onChange(e.value)}/>
             <input type='checkbox'
               value={this.props.value}
@@ -50,7 +57,7 @@ describe('uncontrollable', () =>{
     var warn = sinon.stub(console, 'warn', msg =>{})
       , Control  = uncontrol(Base, { value: 'onChange' })
       , instance = render(<Control value={3}/>)
-    
+
       warn.should.have.been.CalledOnce;
 
       warn.args[0][0].should.contain(
@@ -65,7 +72,7 @@ describe('uncontrollable', () =>{
       , Control  = uncontrol(Base, { value: 'onChange' })
       , instance = render(<Control valueLink={{ value: 10, requestChange: changeSpy }} />)
       , input = findAllTag(instance, 'input')[0]
-    
+
     input.getDOMNode().value.should.equal('10')
 
     trigger.change(input.getDOMNode(), { value: 42 })
@@ -78,7 +85,7 @@ describe('uncontrollable', () =>{
       , Control  = uncontrol(Base, { checked: 'onChange' })
       , instance = render(<Control checkedLink={{ value: false, requestChange: changeSpy }} />)
       , input = findAllTag(instance, 'input')[1]
-    
+
     input.getDOMNode().checked.should.equal(false)
 
     trigger.change(input.getDOMNode(), { checked: true })
@@ -100,14 +107,14 @@ describe('uncontrollable', () =>{
   })
 
 
-  it('should track state if no specified', () => {
+  it('should track internally if not specified', () => {
     var Control  = uncontrol(Base, { value: 'onChange' })
       , instance = render(<Control />)
       , input = findAllTag(instance, 'input')[0]
-    
+
     trigger.change(input.getDOMNode(), { value: 42})
 
-    instance.state.should.have.property('value')
+    expect(instance.values).to.have.property('value')
       .that.equals(42)
   })
 
@@ -116,12 +123,113 @@ describe('uncontrollable', () =>{
       , instance = render(<Control defaultValue={10} defaultOpen />)
       , input = findAllTag(instance, 'input')[0]
       , span = findClass(instance, 'open')
-    
+
     input.getDOMNode().value.should.equal('10')
 
     trigger.change(input.getDOMNode(), { value: 42})
 
-    instance.state.value.should.equal(42)
+    expect(instance.values.value).to.equal(42)
+  })
+
+  it('should update in the right order when controlled', () => {
+    var Control  = uncontrol(Base, { value: 'onChange' })
+      , spy = sinon.spy();
+
+    var Parent = React.createClass({
+      getInitialState(){ return { value: 5 } },
+      render(){
+
+        return (
+          <Control
+            onRender={spy}
+            value={this.state.value}
+            onChange={value => this.setState({ value })}
+          />
+        )
+      }
+    })
+
+    var instance = render(<Parent/>)
+      , input = findAllTag(instance, 'input')[0]
+
+    trigger.change(input.getDOMNode(), { value: 42 })
+
+    spy.callCount.should.equal(2)
+    spy.firstCall.args[0].value.should.equal(5)
+    spy.secondCall.args[0].value.should.equal(42)
+  })
+
+  it('should update in the right order when uncontrolled', () => {
+    var Control  = uncontrol(Base, { value: 'onChange' })
+      , spy = sinon.spy();
+
+    var Parent = React.createClass({
+      getInitialState(){ return { value: 5 } },
+      render(){
+
+        return (
+          <Control
+            onRender={spy}
+            defaultValue={this.state.value}
+          />
+        )
+      }
+    })
+
+    var instance = render(<Parent/>)
+      , input = findAllTag(instance, 'input')[0]
+
+    trigger.change(input.getDOMNode(), { value: 42 })
+
+    spy.callCount.should.equal(2)
+    spy.firstCall.args[0].value.should.equal(5)
+    spy.secondCall.args[0].value.should.equal(42)
+  })
+
+  it('should update correctly in a Layer', () => {
+    var Control  = uncontrol(Base, { value: 'onChange' })
+      , spy = sinon.spy();
+
+    var Parent = React.createClass({
+      getInitialState(){ return { value: 5 } },
+      componentWillUnmount () {
+        this._layer.destroy()
+        this._layer = null
+      },
+
+      componentDidUpdate(){this._renderOverlay()},
+      componentDidMount() {this._renderOverlay()},
+
+      _renderOverlay() {
+        if (!this._layer)
+          this._layer = new Layer(document.body, ()=> this._child)
+
+        this.layerInstance = this._layer.render()
+      },
+
+      render(){
+        this._child = (
+          <Control
+            onRender={spy}
+            value={this.state.value}
+            onChange={value => this.setState({ value, called: true })}
+          />
+        )
+
+        return (
+          <div/>
+        )
+      }
+    })
+
+    var instance = render(<Parent/>)
+      , input = findAllTag(instance.layerInstance, 'input')[0]
+
+    trigger.change(input.getDOMNode(), { value: 42 })
+
+    spy.callCount.should.equal(2)
+    spy.firstCall.args[0].value.should.equal(5)
+    spy.secondCall.args[0].value.should.equal(42)
   })
 
   describe('taps', () => {
@@ -152,4 +260,3 @@ describe('uncontrollable', () =>{
     })
   })
 })
-

@@ -18,7 +18,6 @@ require the module: `var uncontrollable = require('uncontrollable')`
 
 - `Component`: is a valid react component, such as the result of `createClass`
 - `propHandlerHash`: define the pairs of prop/handlers you want to be uncontrollable eg. `{ value: 'onChange'}`
-- `tapsHash`: sometimes you need to jump in the middle of a handler to adjust the value of another prop. You can specify a tap function to run before the handler like: `{ onToggle: function(){ this.setState({value: null }) }`. `this` in the tab will be the uncontrolled component instance, you can use it to adjust its own internal state (`setState` calls will not trigger duplicate renders). This is generally not recommended  if it can be avoided, but sometimes it is necessary to deal with interactions of multiple controlled/uncontrolled pairs in a component.
 
 For ever prop you indicate as uncontrollable, the returned component will also accept an initial, `default` value for that prop. For example, `open` can be left uncontrolled but the initial value can be set via `defaultOpen={true}` if we want it to start open.
 
@@ -28,15 +27,9 @@ For ever prop you indicate as uncontrollable, the returned component will also a
     var UncontrolledCombobox = uncontrollable(
         Combobox, 
         { 
-          value: 'onChange', 
+          value: ['onChange', (e, current) => !v, 
           open: 'onToggle', 
           searchTerm: 'onSearch' //the current typed value (maybe it filters the dropdown list)
-        },
-        {
-          'onToggle': function (isOpen){
-            if ( !isOpen && this.props.searchTerm === undefined ) // if the consumer is not controlling searchTerm
-              this.setState({ searchTerm: '' }) // reset the filter on close
-          }
         })
 ```
 
