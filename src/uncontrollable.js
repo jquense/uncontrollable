@@ -1,6 +1,6 @@
 'use strict';
 var React = require('react')
-var ReactUpdates = require('react/lib/ReactUpdates')
+//var ReactUpdates = require('react/lib/ReactUpdates')
 var invariant = require('react/lib/invariant')
 
 function customPropType(handler, propType, name) {
@@ -35,11 +35,10 @@ function getLinkName(name){
       ? 'checkedLink' : null
 }
 
-function forceUpdateIfMounted() {
-
-  if (this.isMounted() && this._needsUpdate) {
-    this._needsUpdate = false
-    this.forceUpdate()
+function forceUpdateIfMounted(ctx) {
+  if (ctx.isMounted() && ctx._needsUpdate) {
+    ctx._needsUpdate = false
+    ctx.forceUpdate()
   }
 }
 
@@ -122,7 +121,7 @@ module.exports = function(Component, controlledValues, taps) {
 
     function setAndNotify(propName, value, ...args){
       var linkName = getLinkName(propName)
-        , handler    = this.props[controlledValues[propName]];
+        , handler  = this.props[controlledValues[propName]];
 
       if ( linkName && isProp(this.props, linkName) && !handler ) {
         handler = this.props[linkName].requestChange
@@ -134,9 +133,14 @@ module.exports = function(Component, controlledValues, taps) {
       if (handler)
         handler.call(this, value, ...args)
 
-      ReactUpdates.batchedUpdates(()=> {
-        ReactUpdates.asap(forceUpdateIfMounted, this);
-      })
+      // try {
+      //   ReactUpdates.batchedUpdates(()=> {
+      //     ReactUpdates.asap(forceUpdateIfMounted, this);
+      //   })
+      // }
+      setTimeout(() => forceUpdateIfMounted(this))
+
+      //
     }
 
     function isProp(props, prop){
