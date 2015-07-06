@@ -128,13 +128,15 @@ module.exports = function(Component, controlledValues, taps) {
         handler = this.props[linkName].requestChange
       }
 
-      if( handler )
+      this._needsUpdate = true;
+      this.values[propName] = value
+
+      if (handler)
         handler.call(this, value, ...args)
 
-      this.values[propName] = value
-      this._needsUpdate = true;
-
-      ReactUpdates.asap(forceUpdateIfMounted, this);
+      ReactUpdates.batchedUpdates(()=> {
+        ReactUpdates.asap(forceUpdateIfMounted, this);
+      })
     }
 
     function isProp(props, prop){

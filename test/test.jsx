@@ -30,6 +30,13 @@ describe('uncontrollable', () =>{
         onRender: React.PropTypes.func,
       },
 
+      nonBatchingChange(val){
+        var target = this.refs.input.getDOMNode()
+
+        if (val) target.value = val
+
+        this.props.onChange(val)
+      },
 
       render() {
         if ( this.props.onRender )
@@ -42,6 +49,7 @@ describe('uncontrollable', () =>{
               <span className='open'>open!</span>
             }
             <input className='valueInput'
+              ref='input'
               value={this.props.value}
               onChange={ e => this.props.onChange(e.value)}/>
             <input type='checkbox'
@@ -131,6 +139,22 @@ describe('uncontrollable', () =>{
     expect(instance.values.value).to.equal(42)
   })
 
+  it('should not throw when not batching', () => {
+    var spy = sinon.spy();
+
+    var Control  = uncontrol(Base, { value: 'onChange', open: 'onToggle' })
+      , instance = render(<Control defaultValue={10} defaultOpen onChange={spy} />)
+      , base = findType(instance, Base)
+      , span = findClass(instance, 'open')
+
+    expect(()=>
+      base.nonBatchingChange(42)).not.to.throw()
+
+    spy.should.have.been.calledOnce
+
+    expect(instance.values.value).to.equal(42)
+  })
+
   it('should update in the right order when controlled', () => {
     var Control  = uncontrol(Base, { value: 'onChange' })
       , spy = sinon.spy();
@@ -169,6 +193,7 @@ describe('uncontrollable', () =>{
 
         return (
           <Control
+            ref='ctrl'
             onRender={spy}
             defaultValue={this.state.value}
           />
@@ -184,6 +209,14 @@ describe('uncontrollable', () =>{
     spy.callCount.should.equal(2)
     spy.firstCall.args[0].value.should.equal(5)
     spy.secondCall.args[0].value.should.equal(42)
+
+    spy.reset();
+
+    findType(instance.refs.ctrl, Base).nonBatchingChange(84);
+
+    spy.callCount.should.equal(1)
+    spy.firstCall.args[0].value.should.equal(84)
+
   })
 
   it('should update correctly in a Layer', () => {
@@ -209,7 +242,7 @@ describe('uncontrollable', () =>{
 
       render(){
         this._child = (
-          <Control
+          <Control ref='ctrl'
             onRender={spy}
             value={this.state.value}
             onChange={value => this.setState({ value, called: true })}
@@ -230,6 +263,13 @@ describe('uncontrollable', () =>{
     spy.callCount.should.equal(2)
     spy.firstCall.args[0].value.should.equal(5)
     spy.secondCall.args[0].value.should.equal(42)
+
+    spy.reset();
+
+    findType(instance.refs.ctrl, Base).nonBatchingChange(84);
+
+    spy.callCount.should.equal(1)
+    spy.firstCall.args[0].value.should.equal(84)
   })
 
   describe('taps', () => {
