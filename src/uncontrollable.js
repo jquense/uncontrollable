@@ -1,5 +1,6 @@
 'use strict';
 var React = require('react')
+var ReactUpdates = require('react/lib/ReactUpdates')
 var invariant = require('react/lib/invariant')
 
 function customPropType(handler, propType, name) {
@@ -9,8 +10,8 @@ function customPropType(handler, propType, name) {
     if(props[propName] !== undefined) {
       if ( !props[handler] )
         return new Error(
-            'You have provided a `' + propName + '` prop to ' 
-          + '`' + name + '` without an `' + handler + '` handler. This will render a read-only field. ' 
+            'You have provided a `' + propName + '` prop to '
+          + '`' + name + '` without an `' + handler + '` handler. This will render a read-only field. '
           + 'If the field should be mutable use `' + defaultKey(propName) + '`. Otherwise, set `' + handler + '`')
 
       return propType && propType(props, propName, name, location)
@@ -28,13 +29,21 @@ function getType(component){
 }
 
 function getLinkName(name){
-  return name === 'value' 
-    ? 'valueLink' 
-    : name === 'checked' 
+  return name === 'value'
+    ? 'valueLink'
+    : name === 'checked'
       ? 'checkedLink' : null
 }
 
-module.exports = function(Component, controlledValues, taps) {
+function forceUpdateIfMounted() {
+
+  if (this.isMounted() && this._needsUpdate) {
+    this._needsUpdate = false
+    this.forceUpdate()
+  }
+}
+
+module.exports = function(Component, controlledValues) {
     var name = Component.displayName || Component.name || 'Component'
       , types = {}
 
@@ -56,31 +65,31 @@ module.exports = function(Component, controlledValues, taps) {
 
     name = name[0].toUpperCase() + name.substr(1)
 
-    taps = taps || {}
-
     return React.createClass({
 
       displayName: `Uncontrolled${name}`,
 
       propTypes: types,
 
-      getInitialState() {
+      componentWillMount() {
+        this.values = Object.create(null)
+
         var props = this.props
           , keys  = Object.keys(controlledValues);
 
-        return transform(keys, function(state, key){
-          state[key] = props[defaultKey(key)]
+        return transform(keys, (state, key) => {
+          this.values[key] = props[defaultKey(key)]
         }, {})
+
       },
 
-      shouldComponentUpdate() {
-        //let the setState trigger the update
-        return !this._notifying;
+      componentWillReceiveProps(nextProps) {
+        this._needsUpdate = false;
       },
 
       render() {
         var newProps = {}
-          , { 
+          , {
             valueLink
           , checkedLink
           , ...props} = this.props;
@@ -93,19 +102,15 @@ module.exports = function(Component, controlledValues, taps) {
             prop = this.props[linkPropName].value
           }
 
-          newProps[propName] = prop !== undefined 
-            ? prop 
-            : this.state[propName] 
+          newProps[propName] = prop !== undefined
+            ? prop
+            : this.values[propName]
 
           newProps[handle] = setAndNotify.bind(this, propName)
         })
 
         newProps = { ...props, ...newProps }
 
-        //console.log('props: ', newProps)
-        each(taps, (val, key) => 
-          newProps[key] = chain(this, val, newProps[key]))
-          
         return React.createElement(Component, newProps);
       }
     })
@@ -113,22 +118,20 @@ module.exports = function(Component, controlledValues, taps) {
     function setAndNotify(propName, value, ...args){
       var linkName = getLinkName(propName)
         , handler    = this.props[controlledValues[propName]];
-        //, controlled = handler && isProp(this.props, propName);
 
       if ( linkName && isProp(this.props, linkName) && !handler ) {
         handler = this.props[linkName].requestChange
-        //propName = propName === 'valueLink' ? 'value' : 'checked'
       }
 
-      if( handler ) {
-        this._notifying = true
+      this._needsUpdate = true;
+      this.values[propName] = value
+
+      if (handler)
         handler.call(this, value, ...args)
-        this._notifying = false
-      }
-        
-      this.setState({ [propName]: value })
 
-      //return !controlled
+      ReactUpdates.batchedUpdates(()=> {
+        ReactUpdates.asap(forceUpdateIfMounted, this);
+      })
     }
 
     function isProp(props, prop){
@@ -156,7 +159,7 @@ function transform(obj, cb, seed){
 function each(obj, cb, thisArg){
   if( Array.isArray(obj)) return obj.forEach(cb, thisArg)
 
-  for(var key in obj) if(has(obj, key)) 
+  for(var key in obj) if(has(obj, key))
     cb.call(thisArg, obj[key], key, obj)
 }
 
