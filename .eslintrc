@@ -23,8 +23,6 @@
     "no-unused-expressions": 0,
     "no-unused-vars": [2, {"vars": "all", "args": "after-used"}],
     "no-use-before-define": 0,
-    "key-spacing": [2, {
-      "align": "value"
-    }]
+    "key-spacing": 0
   }
 }

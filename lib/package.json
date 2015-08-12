@@ -1,0 +1,20 @@
+{
+  "name": "uncontrollable",
+  "version": "3.0.0",
+  "description": "Wrap a controlled react component, to allow spcific prop/handler pairs to be uncontrolled",
+  "author": {
+    "name": "Jason Quense",
+    "email": "monastic.panic@gmail.com"
+  },
+  "repository": "jquense/uncontrollable",
+  "license": "MIT",
+  "main": "index.js",
+  "keywords": [
+    "uncontrolled-component",
+    "react-component",
+    "input",
+    "controlled",
+    "uncontrolled",
+    "form"
+  ]
+}

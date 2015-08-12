@@ -8,11 +8,21 @@ Wrap a controlled react component, to allow specific prop/handler pairs to be om
 npm i -S uncontrollable
 ```
 
+### Usage
+
+uncontrollable `3.0.0` comes with two versions of the utility, the "classic" one and a version that uses batchedUpdates, which solves some bugs related to update order when used across multiple react roots, or "Portals". The batched version is teh recommended verion but it has one major caveat, since it uses an stateful addon, it _does not_ play well with global build that rely on an externalized react file, such as from a CDN. If you are having problems with the batching version just use the normal one, it almost certainly will work for you.
+
+```js
+import classic from 'uncontrollable';
+import batching from 'uncontrollable/batching';
+```
+
+Both versions have the same API.
+
 ### API
 
 If you are a bit unsure on the _why_ of this module read the next section first. If you just want to see some real-world example, check out [React Widgets](https://github.com/jquense/react-widgets) which makes [heavy use of this strategy](https://github.com/jquense/react-widgets/blob/master/src/Multiselect.jsx#L418).
 
-require the module: `var uncontrollable = require('uncontrollable')`
 
 #### `uncontrollable(Component, propHandlerHash, tapsHash)`
 
@@ -27,7 +37,7 @@ For ever prop you indicate as uncontrollable, the returned component will also a
     var UncontrolledCombobox = uncontrollable(
         Combobox, 
         { 
-          value: ['onChange', (e, current) => !v, 
+          value: 'onChange', 
           open: 'onToggle', 
           searchTerm: 'onSearch' //the current typed value (maybe it filters the dropdown list)
         })
