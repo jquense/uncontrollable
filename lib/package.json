@@ -1,6 +1,6 @@
 {
   "name": "uncontrollable",
-  "version": "3.0.0",
+  "version": "3.0.2",
   "description": "Wrap a controlled react component, to allow spcific prop/handler pairs to be uncontrolled",
   "author": {
     "name": "Jason Quense",
@@ -21,6 +21,6 @@
     "invariant": "^2.1.0"
   },
   "peerDependencies": {
-    "react": ">=0.11.0"
+    "react": ">=0.11.0 || 0.14.0-beta3"
   }
 }

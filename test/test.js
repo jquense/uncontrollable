@@ -1,7 +1,6 @@
 import React from 'react/addons';
 import uncontrol from '../src';
 import batching from '../src/batching';
-import Layer from 'react-layer';
 
 var TestUtils = React.addons.TestUtils
   , render = TestUtils.renderIntoDocument
@@ -237,6 +236,42 @@ describe('uncontrollable', () =>{
   })
 
   describe('batching specific behavior', ()=>{
+    class Layer {
+
+      constructor(container, render){
+        this._container = container
+        this._render = render
+      }
+
+      render(cb){
+        if (!this._mountPoint)
+          this._createMountPoint();
+
+        var child = this._render()
+
+        return React.render(child, this._mountPoint, cb);
+      }
+
+      unmount() {
+        if(!this._mountPoint) return
+
+        React.unmountComponentAtNode(this._mountPoint);
+      }
+
+      destroy() {
+        this.unmount()
+
+        if (this._mountPoint){
+          this._container.removeChild(this._mountPoint)
+          this._mountPoint = null;
+        }
+      }
+
+      _createMountPoint() {
+        this._mountPoint = document.createElement('div');
+        this._container.appendChild(this._mountPoint);
+      }
+    }
 
     it('should update correctly in a Layer', () => {
       var Control  = batching(Base, { value: 'onChange' })
