@@ -1,5 +1,4 @@
 import React from 'react';
-import invariant from 'react/lib/invariant';
 import * as utils from './utils';
 
 export default function createUncontrollable(mixins, set){
@@ -7,30 +6,15 @@ export default function createUncontrollable(mixins, set){
   return uncontrollable;
 
   function uncontrollable(Component, controlledValues) {
-    var displayName = `Uncontrolled(${Component.displayName || Component.name || 'Component'})`
+    var displayName = Component.displayName || Component.name || 'Component'
       , basePropTypes = utils.getType(Component).propTypes
-      , propTypes = {}
+      , propTypes;
 
-    if (process.env.NODE_ENV !== 'production' && basePropTypes) {
-      utils.transform(controlledValues, function(obj, handler, prop){
-        var type = basePropTypes[prop];
-
-        invariant(typeof handler === 'string' && handler.trim().length,
-            'Uncontrollable - [%s]: the prop `%s` needs a valid handler key name in order to make it uncontrollable'
-          , Component.displayName
-          , prop)
-
-        obj[prop] = utils.customPropType(handler, type, Component.displayName)
-
-        if (type !== undefined )
-          obj[utils.defaultKey(prop)] = type;
-
-      }, propTypes);
-    }
+    propTypes = utils.uncontrolledPropTypes(controlledValues, basePropTypes, displayName)
 
     let component = React.createClass({
 
-      displayName,
+      displayName: `Uncontrolled(${displayName})`,
 
       mixins,
 

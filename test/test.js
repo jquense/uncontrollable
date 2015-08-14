@@ -28,7 +28,7 @@ describe('uncontrollable', () =>{
       },
 
       nonBatchingChange(val){
-        var target = this.refs.input.getDOMNode()
+        var target = React.findDOMNode(this.refs.input)
 
         if (val) target.value = val
 
@@ -61,7 +61,7 @@ describe('uncontrollable', () =>{
   describe('common behavior', ()=>{
     var obj = {
       'classic': uncontrol,
-      'batching': batching,
+      'batching': batching
     }
 
     Object.keys(obj).forEach(type => {
@@ -70,17 +70,12 @@ describe('uncontrollable', () =>{
       describe(type, ()=> {
 
         it('should warn when handlers are missing', () => {
-          var warn = sinon.stub(console, 'warn', msg =>{})
-            , Control  = method(Base, { value: 'onChange' })
-            , instance = render(<Control value={3}/>)
+          var Control  = method(Base, { value: 'onChange' })
 
-            warn.should.have.been.CalledOnce;
-
-            warn.args[0][0].should.contain(
+          Control.propTypes.value({ value: 3 }, 'value')
+            .message.should.contain(
               'You have provided a `value` prop to `Base` without an `onChange` ' +
               'handler. This will render a read-only field.')
-
-            warn.restore()
         })
 
         it('should work with valueLink', () => {
@@ -89,9 +84,9 @@ describe('uncontrollable', () =>{
             , instance = render(<Control valueLink={{ value: 10, requestChange: changeSpy }} />)
             , input = findAllTag(instance, 'input')[0]
 
-          input.getDOMNode().value.should.equal('10')
+          React.findDOMNode(input).value.should.equal('10')
 
-          trigger.change(input.getDOMNode(), { value: 42 })
+          trigger.change(React.findDOMNode(input), { value: 42 })
 
           changeSpy.should.have.been.calledOnce.and.calledWith(42)
         })
@@ -102,14 +97,21 @@ describe('uncontrollable', () =>{
             , instance = render(<Control checkedLink={{ value: false, requestChange: changeSpy }} />)
             , input = findAllTag(instance, 'input')[1]
 
-          input.getDOMNode().checked.should.equal(false)
+          React.findDOMNode(input).checked.should.equal(false)
 
-          trigger.change(input.getDOMNode(), { checked: true })
+          trigger.change(React.findDOMNode(input), { checked: true })
 
           changeSpy.should.have.been.calledOnce.and.calledWith(true)
         })
 
         it('should create defaultProp propTypes', () => {
+          var Control  = method(Base, { value: 'onChange' })
+
+          Control.propTypes.should.have.property('defaultValue')
+            .that.equals(Base.propTypes.value)
+        })
+
+        it('should passThrough base propTypes', () => {
           var Control  = method(Base, { value: 'onChange' })
 
           Control.propTypes.should.have.property('defaultValue')
@@ -133,7 +135,7 @@ describe('uncontrollable', () =>{
             , instance = render(<Control />)
             , input = findAllTag(instance, 'input')[0]
 
-          trigger.change(input.getDOMNode(), { value: 42})
+          trigger.change(React.findDOMNode(input), { value: 42})
 
           expect(instance._values).to.have.property('value')
             .that.equals(42)
@@ -145,9 +147,9 @@ describe('uncontrollable', () =>{
             , input = findAllTag(instance, 'input')[0]
             , span = findClass(instance, 'open')
 
-          input.getDOMNode().value.should.equal('10')
+          React.findDOMNode(input).value.should.equal('10')
 
-          trigger.change(input.getDOMNode(), { value: 42})
+          trigger.change(React.findDOMNode(input), { value: 42})
 
           expect(instance._values.value).to.equal(42)
         })
@@ -189,7 +191,7 @@ describe('uncontrollable', () =>{
           var instance = render(<Parent/>)
             , input = findAllTag(instance, 'input')[0]
 
-          trigger.change(input.getDOMNode(), { value: 42 })
+          trigger.change(React.findDOMNode(input), { value: 42 })
 
           spy.callCount.should.equal(2)
           spy.firstCall.args[0].value.should.equal(5)
@@ -217,7 +219,7 @@ describe('uncontrollable', () =>{
           var instance = render(<Parent/>)
             , input = findAllTag(instance, 'input')[0]
 
-          trigger.change(input.getDOMNode(), { value: 42 })
+          trigger.change(React.findDOMNode(input), { value: 42 })
 
           spy.callCount.should.equal(2)
           spy.firstCall.args[0].value.should.equal(5)
@@ -274,7 +276,7 @@ describe('uncontrollable', () =>{
       var instance = render(<Parent/>)
         , input = findAllTag(instance.layerInstance, 'input')[0]
 
-      trigger.change(input.getDOMNode(), { value: 42 })
+      trigger.change(React.findDOMNode(input), { value: 42 })
 
       spy.callCount.should.equal(2)
       spy.firstCall.args[0].value.should.equal(5)

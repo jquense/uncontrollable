@@ -1,19 +1,44 @@
 import React from 'react';
+import invariant from 'invariant';
 
 export function customPropType(handler, propType, name) {
 
-  return function(props, propName, componentName, location) {
+  return function(props, propName, componentName) {
 
     if(props[propName] !== undefined) {
-      if ( !props[handler] )
+      if ( !props[handler] ){
         return new Error(
             'You have provided a `' + propName + '` prop to '
           + '`' + name + '` without an `' + handler + '` handler. This will render a read-only field. '
           + 'If the field should be mutable use `' + defaultKey(propName) + '`. Otherwise, set `' + handler + '`')
+      }
 
-      return propType && propType(props, propName, name, location)
+      return propType && propType(props, propName, name)
     }
   }
+}
+
+export function uncontrolledPropTypes(controlledValues, basePropTypes, displayName) {
+  let propTypes = {}
+
+  if (process.env.NODE_ENV !== 'production' && basePropTypes) {
+    transform(controlledValues, function(obj, handler, prop){
+      var type = basePropTypes[prop];
+
+      invariant(typeof handler === 'string' && handler.trim().length,
+          'Uncontrollable - [%s]: the prop `%s` needs a valid handler key name in order to make it uncontrollable'
+        , displayName
+        , prop)
+
+      obj[prop] = customPropType(handler, type, displayName)
+
+      if (type !== undefined )
+        obj[defaultKey(prop)] = type;
+
+    }, propTypes);
+  }
+
+  return propTypes;
 }
 
 export let version = React.version.split('.').map(parseFloat);
