@@ -53,7 +53,16 @@ describe('uncontrollable', () =>{
               checked={this.props.checked}
               onChange={ e => this.props.onChange(e.checked)}/>
           </div>)
+      },
+
+      foo(num){
+        return num + num;
+      },
+
+      bar(){
+        return 'value: ' + this.props.value
       }
+
     })
   })
 
@@ -115,6 +124,17 @@ describe('uncontrollable', () =>{
 
           Control.propTypes.should.have.property('defaultValue')
             .that.equals(Base.propTypes.value)
+        })
+
+        it('should forward methods', () => {
+          var Control  = method(Base, { value: 'onChange' }, ['foo', 'bar'])
+            , instance = render(<Control value={5} onChange={()=>{}}/>)
+
+          expect(instance.foo).to.be.a('function')
+          expect(instance.bar).to.be.a('function')
+
+          expect(instance.foo(10)).to.be.equal(20)
+          expect(instance.bar()).to.be.equal('value: 5')
         })
 
         it('should adjust displayName', () => {

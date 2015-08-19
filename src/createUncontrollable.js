@@ -5,12 +5,19 @@ export default function createUncontrollable(mixins, set){
 
   return uncontrollable;
 
-  function uncontrollable(Component, controlledValues) {
+  function uncontrollable(Component, controlledValues, forwardMethods = []) {
     var displayName = Component.displayName || Component.name || 'Component'
       , basePropTypes = utils.getType(Component).propTypes
       , propTypes;
 
     propTypes = utils.uncontrolledPropTypes(controlledValues, basePropTypes, displayName)
+
+    let methods = utils.transform(forwardMethods, (proto, method) => {
+      proto[method] = function() {
+        let controlled = this.refs.controlled;
+        return controlled[method].apply(controlled, arguments)
+      }
+    }, {})
 
     let component = React.createClass({
 
@@ -19,6 +26,8 @@ export default function createUncontrollable(mixins, set){
       mixins,
 
       propTypes,
+
+      ...methods,
 
       componentWillMount() {
         var props = this.props
@@ -50,10 +59,11 @@ export default function createUncontrollable(mixins, set){
           newProps[handle] = setAndNotify.bind(this, propName)
         })
 
-        newProps = { ...props, ...newProps }
+        newProps = { ref: 'controlled', ...props, ...newProps }
 
         return React.createElement(Component, newProps);
       }
+
     })
 
     component.ControlledComponent = Component
