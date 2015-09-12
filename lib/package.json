@@ -21,6 +21,6 @@
     "invariant": "^2.1.0"
   },
   "peerDependencies": {
-    "react": ">=0.11.0 || 0.14.0-beta3"
+    "react": ">=0.11.0 || 0.14.0-beta3 || ^0.14.0-rc1"
   }
 }
