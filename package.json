@@ -8,7 +8,7 @@
   },
   "repository": "jquense/uncontrollable",
   "license": "MIT",
-  "main": "lib/uncontrollable.js",
+  "main": "lib/index.js",
   "keywords": [
     "uncontrolled-component",
     "react-component",
@@ -25,7 +25,7 @@
     "build": "npm run test && npm run clean && babel src --out-dir lib && npm run copy"
   },
   "peerDependencies": {
-    "react": ">=0.11.0 || 0.14.0-beta3"
+    "react": ">=0.11.0 || 0.14.0-beta3 || ^0.14.0-rc1"
   },
   "devDependencies": {
     "babel": "^5.8.21",
