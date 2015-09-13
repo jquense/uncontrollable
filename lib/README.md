@@ -24,7 +24,7 @@ Both versions have the same API.
 If you are a bit unsure on the _why_ of this module read the next section first. If you just want to see some real-world example, check out [React Widgets](https://github.com/jquense/react-widgets) which makes [heavy use of this strategy](https://github.com/jquense/react-widgets/blob/master/src/Multiselect.jsx#L418).
 
 
-#### `uncontrollable(Component, propHandlerHash, tapsHash)`
+#### `uncontrollable(Component, propHandlerHash, [methods])`
 
 - `Component`: is a valid react component, such as the result of `createClass`
 - `propHandlerHash`: define the pairs of prop/handlers you want to be uncontrollable eg. `{ value: 'onChange'}`
@@ -35,12 +35,24 @@ For ever prop you indicate as uncontrollable, the returned component will also a
     var uncontrollable =  require('uncontrollable');
 
     var UncontrolledCombobox = uncontrollable(
-        Combobox, 
-        { 
-          value: 'onChange', 
-          open: 'onToggle', 
+        Combobox,
+        {
+          value: 'onChange',
+          open: 'onToggle',
           searchTerm: 'onSearch' //the current typed value (maybe it filters the dropdown list)
         })
+```
+
+Since uncontrollable creates a new component that wraps your existing one, methods on your underlying component
+won't be immediately accessible. In general this sort of access is not idomatic React, but it does have its place.
+The third argument of `uncontrollable()` is an optional array of method names you want uncontrollable to "pass through"
+to the original component.
+
+```js
+let UncontrolledForm = uncontrollable(Form, { value: 'onChange'}, ['submit'])
+
+//when you use a ref this will work
+this.refs.myForm.submit()
 ```
 
 ### Use Case
@@ -50,8 +62,8 @@ One of the strengths of React is its extensibility model, enabled by a common pr
 ```jsx
   render: function() {
     return (
-        <input type='text' 
-          value={this.state.value} 
+        <input type='text'
+          value={this.state.value}
           onChange={ e => this.setState({ value: e.target.value })}/>
     )
   }
@@ -73,14 +85,14 @@ var SimpleDropdown = React.createClass({
   render: function() {
     return (
       <div>
-        <input 
-          value={this.props.value} 
+        <input
+          value={this.props.value}
           onChange={ e => this.props.onChange(e.target.value)}
         />
         <button onClick={ e => this.props.onToggle(!this.props.open)}>
           open
         </button>
-        { this.props.open && 
+        { this.props.open &&
           <ul className='open'>
             <li>option 1</li>
             <li>option 2</li>
@@ -94,7 +106,7 @@ var SimpleDropdown = React.createClass({
 
 Notice how we don't track any state in our simple dropdown? This is great because a consumer of our module will have the all the flexibility to decide what the behavior of the dropdown should be. Also notice our public API (propTypes), it consists of common pattern: a property we want set (`value`, `open`), and a set of handlers that indicate _when_ we want them set (`onChange`, `onToggle`). It is up to the parent component to change the `value` and `open` props in response to the handlers.
 
-While this pattern offers a excellent amount of flexibility to our consumers it also requires them to write a bunch of boilerplate code that probably won't change much from use to use. In all likelihood they will always want to set `open` in response to `onToggle`, and only in rare cases, want to override that behavior. This is where our controlled/uncontrolled pattern comes in. 
+While this pattern offers a excellent amount of flexibility to our consumers it also requires them to write a bunch of boilerplate code that probably won't change much from use to use. In all likelihood they will always want to set `open` in response to `onToggle`, and only in rare cases, want to override that behavior. This is where our controlled/uncontrolled pattern comes in.
 
 We want to just handle the open/onToggle case ourselves if the consumer doesn't provide a `open` prop (indicating that they want to control it). Rather than complicating our dropdown component with all that logic obsuring the business logic of our dropdown, we can add it later, by taking our dropdown and wrapping it inside another component that handles that for us.
 
@@ -104,14 +116,14 @@ We want to just handle the open/onToggle case ourselves if the consumer doesn't 
     var uncontrollable =  require('uncontrollable');
 
     var UncontrollableMyInput = uncontrollable(
-        SimpleDropdown, 
-        /* define the pairs ->*/ 
+        SimpleDropdown,
+        /* define the pairs ->*/
         { value: 'onChange', open: 'onToggle' })
 
     <UncontrollableDropdown
       value={this.state.val} //we can still control these props if we want
-      onChange={val => this.setState({ val })} 
-      defaultopen={true} /> // or just let the UncontrollableDropdown handle it 
+      onChange={val => this.setState({ val })}
+      defaultopen={true} /> // or just let the UncontrollableDropdown handle it
                             // and we just set an initial value (or leave it out completely)!
 ```
 
