@@ -34,6 +34,10 @@ describe('uncontrollable', () =>{
         this.props.onChange(val)
       },
 
+      foo(){
+        return 'hello'
+      },
+
       render() {
         if ( this.props.onRender )
           this.props.onRender(this.props)
@@ -127,6 +131,15 @@ describe('uncontrollable', () =>{
           var Control  = method(Base, { value: 'onChange' })
 
           Control.ControlledComponent.should.equal(Base)
+        })
+
+        it.only('should pass through methods.', () => {
+          var Control  = method(Base, { value: 'onChange' }, ['foo'])
+            , instance = render(<Control defaultValue={10} defaultOpen />);
+
+          instance.foo.should.be.a('function')
+          instance.foo().should.equal('hello')
+          instance.refs.inner.should.exist
         })
 
         it('should track internally if not specified', () => {
