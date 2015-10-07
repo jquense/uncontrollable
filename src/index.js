@@ -2,7 +2,7 @@ import createUncontrollable  from './createUncontrollable';
 
 let mixin = {
   shouldComponentUpdate() {
-    //let the setState trigger the update
+    //let the forceUpdate trigger the update
     return !this._notifying;
   }
 }
@@ -19,4 +19,3 @@ function set(component, propName, handler, value, args) {
 }
 
 export default createUncontrollable([ mixin ], set)
-

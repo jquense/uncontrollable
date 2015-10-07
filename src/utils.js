@@ -3,7 +3,7 @@ import invariant from 'invariant';
 
 export function customPropType(handler, propType, name) {
 
-  return function(props, propName, componentName) {
+  return function(props, propName) {
 
     if(props[propName] !== undefined) {
       if ( !props[handler] ){
@@ -48,6 +48,19 @@ export function getType(component){
     return component
 
   return component.type
+}
+
+export function getValue(props, name){
+  var linkPropName = getLinkName(name);
+
+  if (linkPropName && !isProp(props, name) && isProp(props, linkPropName))
+    return props[linkPropName].value
+
+  return props[name]
+}
+
+function isProp(props, prop){
+  return props[prop] !== undefined;
 }
 
 export function getLinkName(name){

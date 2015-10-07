@@ -38,6 +38,23 @@ export default function createUncontrollable(mixins, set){
         }, {})
       },
 
+      /**
+       * If a prop switches from controlled to Uncontrolled
+       * reset its value to the defaultValue
+       */
+      componentWillReceiveProps(nextProps){
+        let props = this.props
+          , keys  = Object.keys(controlledValues);
+
+        keys.forEach(key => {
+          if (utils.getValue(nextProps, key) === undefined
+           && utils.getValue(props, key) !== undefined)
+           {
+             this._values[key] = nextProps[utils.defaultKey(key)]
+           }
+        })
+      },
+
       render() {
         var newProps = {}
           , {
@@ -49,7 +66,7 @@ export default function createUncontrollable(mixins, set){
           var linkPropName = utils.getLinkName(propName)
             , prop = this.props[propName];
 
-          if ( linkPropName && !isProp(this.props, propName) && isProp(this.props, linkPropName) ) {
+          if (linkPropName && !isProp(this.props, propName) && isProp(this.props, linkPropName) ) {
             prop = this.props[linkPropName].value
           }
 
