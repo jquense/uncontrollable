@@ -1,6 +1,6 @@
 {
   "name": "uncontrollable",
-  "version": "3.1.1",
+  "version": "3.1.2",
   "description": "Wrap a controlled react component, to allow spcific prop/handler pairs to be uncontrolled",
   "author": {
     "name": "Jason Quense",
@@ -49,7 +49,7 @@
     "karma-webpack": "~1.2.2",
     "mocha": "~1.21.4",
     "phantomjs": "^1.9.16",
-    "react": ">=0.11.0 || 0.14.0-beta3",
+    "react": ">=0.11.0",
     "rimraf": "^2.2.8",
     "sinon-chai": "^2.6.0",
     "style-loader": "^0.8.3",

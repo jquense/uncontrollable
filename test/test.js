@@ -149,6 +149,15 @@ describe('uncontrollable', () =>{
           Control.ControlledComponent.should.equal(Base)
         })
 
+        it('should pass through methods.', () => {
+          var Control  = method(Base, { value: 'onChange' }, ['foo'])
+            , instance = render(<Control defaultValue={10} defaultOpen />);
+
+          instance.foo.should.be.a('function')
+          instance.foo(2).should.equal(4)
+          instance.refs.inner.should.exist
+        })
+
         it('should track internally if not specified', () => {
           var Control  = method(Base, { value: 'onChange' })
             , instance = render(<Control />)
@@ -190,7 +199,7 @@ describe('uncontrollable', () =>{
         })
 
         it('should update in the right order when controlled', () => {
-          var Control  = method(Base, { value: 'onChange' })
+          var Control = method(Base, { value: 'onChange' })
             , spy = sinon.spy();
 
           var Parent = React.createClass({
