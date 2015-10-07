@@ -20,12 +20,17 @@
   "scripts": {
     "test": "karma start --single-run",
     "clean": "rimraf lib",
-    "copy": "node create-pkg.js && cpy ./README.md ./lib",
+    "copy": "cpy ./README.md ./lib",
     "tdd": "karma start",
-    "build": "npm run test && npm run clean && babel src --out-dir lib && npm run copy"
+    "build": "npm run test && npm run clean && babel src --out-dir lib && npm run copy",
+    "release": "release"
   },
   "peerDependencies": {
-    "react": ">=0.11.0 || 0.14.0-beta3"
+    "react": ">=0.11.0"
+  },
+  "release-script": {
+    "defaultDryRun": "false",
+    "altPkgRootFolder": "lib"
   },
   "devDependencies": {
     "babel": "^5.8.21",
