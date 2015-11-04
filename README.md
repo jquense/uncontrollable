@@ -21,7 +21,7 @@ Both versions have the same API.
 
 ### API
 
-If you are a bit unsure on the _why_ of this module read the next section first. If you just want to see some real-world example, check out [React Widgets](https://github.com/jquense/react-widgets) which makes [heavy use of this strategy](https://github.com/jquense/react-widgets/blob/master/src/Multiselect.jsx#L418).
+If you are a bit unsure on the _why_ of this module read the next section first. If you just want to see some real-world example, check out [React Widgets](https://github.com/jquense/react-widgets) which makes [heavy use of this strategy](https://github.com/jquense/react-widgets/blob/5d1b530cb094cdc72f577fe01abe4a02dd265400/src/Multiselect.jsx#L521).
 
 
 #### `uncontrollable(Component, propHandlerHash, [methods])`
