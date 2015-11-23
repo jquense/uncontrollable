@@ -1,4 +1,4 @@
-import createUncontrollable  from './createUncontrollable';
+import createUncontrollable from './createUncontrollable';
 
 let mixin = {
   shouldComponentUpdate() {
@@ -15,7 +15,9 @@ function set(component, propName, handler, value, args) {
   }
 
   component._values[propName] = value
-  component.forceUpdate()
+  
+  if (component.isMounted())
+    component.forceUpdate()
 }
 
 export default createUncontrollable([ mixin ], set)

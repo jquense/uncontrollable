@@ -19,7 +19,9 @@ function set(component, propName, handler, value, args) {
     ReactUpdates.asap(() => {
       if (component.isMounted() && component._needsUpdate) {
         component._needsUpdate = false
-        component.forceUpdate()
+
+        if (component.isMounted())
+          component.forceUpdate()
       }
     })
   })

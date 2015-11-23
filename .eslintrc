@@ -9,7 +9,7 @@
   "global": {
     "expect": true,
     "sinon": true
-  }
+  },
   "rules": {
     "no-eval": 2,
     "strict": 0,
