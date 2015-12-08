@@ -84,6 +84,14 @@ export default function createUncontrollable(mixins, set){
 
     component.ControlledComponent = Component
 
+    /**
+     * useful when wrapping a Component and you want to control
+     * everything
+     */
+    component.deferControlTo = (newComponent, additions = {}, nextMethods) => {
+      return uncontrollable(newComponent, { ...controlledValues, ...additions }, nextMethods)
+    }
+
     return component
 
     function setAndNotify(propName, value, ...args){
