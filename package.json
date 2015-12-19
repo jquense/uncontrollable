@@ -8,7 +8,7 @@
   },
   "repository": "jquense/uncontrollable",
   "license": "MIT",
-  "main": "lib/uncontrollable.js",
+  "main": "lib/index.js",
   "keywords": [
     "uncontrolled-component",
     "react-component",
