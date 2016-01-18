@@ -1,6 +1,6 @@
 # uncontrollable
 
-Wrap a controlled react component, to allow specific prop/handler pairs to be omited by Component consumers. Uncontrollable allows you to write pure react components, with minimal state, and then wrap them in a component that will manage state for prop/handlers if they are excluded.
+Wrap a controlled react component, to allow specific prop/handler pairs to be omited by Component consumers. Uncontrollable allows you to write React components, with minimal state, and then wrap them in a component that will manage state for prop/handlers if they are excluded.
 
 ## Install
 
@@ -30,7 +30,7 @@ If you are a bit unsure on the _why_ of this module read the next section first.
 - `propHandlerHash`: define the pairs of prop/handlers you want to be uncontrollable eg. `{ value: 'onChange'}`
 - `methods`: since uncontrollable wraps your component in another component, methods are not immediately assessible. you can proxy them through by providing the names of the methods you want to continue to expose.
 
-For ever prop you indicate as uncontrollable, the returned component will also accept an initial, `default` value for that prop. For example, `open` can be left uncontrolled but the initial value can be set via `defaultOpen={true}` if we want it to start open.
+For every prop you indicate as uncontrollable, the returned component will also accept an initial, `default` value for that prop. For example, `open` can be left uncontrolled but the initial value can be set via `defaultOpen={true}` if we want it to start open.
 
 ```js
     var uncontrollable =  require('uncontrollable');
@@ -116,18 +116,18 @@ We want to just handle the open/onToggle case ourselves if the consumer doesn't 
 ```js
     var uncontrollable =  require('uncontrollable');
 
-    var UncontrollableMyInput = uncontrollable(
-        SimpleDropdown,
-        /* define the pairs ->*/
-        { value: 'onChange', open: 'onToggle' })
+    var UncontrollableDropdown = uncontrollable(SimpleDropdown, { 
+          value: 'onChange', 
+          open: 'onToggle'
+        })
 
     <UncontrollableDropdown
-      value={this.state.val} //we can still control these props if we want
+      value={this.state.val} // we can still control these props if we want
       onChange={val => this.setState({ val })}
       defaultOpen={true} /> // or just let the UncontrollableDropdown handle it
                             // and we just set an initial value (or leave it out completely)!
 ```
 
-Now we don't need to worry about the open onToggle! The returned Component will just track `open` for us by assuming that it should just set `open` to whatever `onToggle` returns. If we _do_ want to worry about it we can just provide `open` and `onToggle` props and the uncontrolled input will just pass them through.
+Now we don't need to worry about the open onToggle! The returned component will track `open` for us by assuming that it should just set `open` to whatever `onToggle` returns. If we _do_ want to worry about it we can just provide `open` and `onToggle` props and the uncontrolled input will just pass them through.
 
-The above is a contrived example but it allows you to wrap even more complex Components, giving you a lot of flexibiltity in the API you can offer a consumer of your Component. For every pair of prop/handlers you also get a defaultProp of the form "default[PropName]" so `value` -> `defaultValue`, and `open` -> `defaultOpen`, etc. [React Widgets](https://github.com/jquense/react-widgets) makes heavy use of this strategy, you can see it in action here: https://github.com/jquense/react-widgets/blob/master/src/Multiselect.jsx#L408
+The above is a contrived example but it allows you to wrap even more complex Components, giving you a lot of flexibiltity in the API you can offer a consumer of your Component. For every pair of prop/handlers you also get a defaultProp of the form "default[PropName]" so `value` -> `defaultValue`, and `open` -> `defaultOpen`, etc. [React Widgets](https://github.com/jquense/react-widgets) makes heavy use of this strategy, you can see it in action here: https://github.com/jquense/react-widgets/blob/5d1b530cb094cdc72f577fe01abe4a02dd265400/src/Multiselect.jsx#L521
