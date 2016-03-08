@@ -44,7 +44,7 @@ export function uncontrolledPropTypes(controlledValues, basePropTypes, displayNa
 export let version = React.version.split('.').map(parseFloat);
 
 export function getType(component){
-  if( version[0] === 0 && version[1] >= 13)
+  if( version[0] >= 15 || (version[0] === 0 && version[1] >= 13) )
     return component
 
   return component.type
