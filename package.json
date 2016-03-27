@@ -1,6 +1,6 @@
 {
   "name": "uncontrollable",
-  "version": "3.2.2",
+  "version": "3.2.3",
   "description": "Wrap a controlled react component, to allow specific prop/handler pairs to be uncontrolled",
   "author": {
     "name": "Jason Quense",
