@@ -1,4 +1,5 @@
 import React from 'react';
+import invariant from 'invariant';
 import * as utils from './utils';
 
 export default function createUncontrollable(mixins, set){
@@ -8,10 +9,16 @@ export default function createUncontrollable(mixins, set){
   function uncontrollable(Component, controlledValues, methods = []) {
     var displayName = Component.displayName || Component.name || 'Component'
       , basePropTypes = utils.getType(Component).propTypes
+      , isCompositeComponent = utils.isReactComponent(Component)
       , propTypes;
 
     propTypes = utils.uncontrolledPropTypes(controlledValues, basePropTypes, displayName)
 
+    invariant(isCompositeComponent || !methods.length,
+      '[uncontrollable] stateless function components cannot pass through methods ' +
+      'becasue they have no associated instances. Check component: ' + displayName + ', ' +
+      'attempting to pass through methods: ' + methods.join(', ')
+    )
     methods = utils.transform(methods, (obj, method) => {
       obj[method] = function(...args){
         return this.refs.inner[method](...args)
@@ -75,7 +82,11 @@ export default function createUncontrollable(mixins, set){
           newProps[handle] = setAndNotify.bind(this, propName)
         })
 
-        newProps = { ...props, ...newProps, ref: 'inner' }
+        newProps = {
+          ...props,
+          ...newProps,
+          ref: isCompositeComponent ? 'inner' : null
+        }
 
         return React.createElement(Component, newProps);
       }

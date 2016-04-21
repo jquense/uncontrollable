@@ -1,9 +1,10 @@
-import React from 'react/addons';
+import React from 'react';
+import TestUtils from 'react-addons-test-utils';
+import ReactDom, { findDOMNode } from 'react-dom';
 import uncontrol from '../src';
 import batching from '../src/batching';
 
-var TestUtils = React.addons.TestUtils
-  , render = TestUtils.renderIntoDocument
+var render = TestUtils.renderIntoDocument
   , findClass = TestUtils.findRenderedDOMComponentWithClass
   , findAllTag = TestUtils.scryRenderedDOMComponentsWithTag
   , findType = TestUtils.findRenderedComponentWithType
@@ -27,7 +28,7 @@ describe('uncontrollable', () =>{
       },
 
       nonBatchingChange(val){
-        var target = React.findDOMNode(this.refs.input)
+        var target = findDOMNode(this.refs.input)
 
         if (val) target.value = val
 
@@ -92,9 +93,9 @@ describe('uncontrollable', () =>{
             , instance = render(<Control valueLink={{ value: 10, requestChange: changeSpy }} />)
             , input = findAllTag(instance, 'input')[0]
 
-          React.findDOMNode(input).value.should.equal('10')
+          findDOMNode(input).value.should.equal('10')
 
-          trigger.change(React.findDOMNode(input), { value: 42 })
+          trigger.change(findDOMNode(input), { value: 42 })
 
           changeSpy.should.have.been.calledOnce.and.calledWith(42)
         })
@@ -105,9 +106,9 @@ describe('uncontrollable', () =>{
             , instance = render(<Control checkedLink={{ value: false, requestChange: changeSpy }} />)
             , input = findAllTag(instance, 'input')[1]
 
-          React.findDOMNode(input).checked.should.equal(false)
+          findDOMNode(input).checked.should.equal(false)
 
-          trigger.change(React.findDOMNode(input), { checked: true })
+          trigger.change(findDOMNode(input), { checked: true })
 
           changeSpy.should.have.been.calledOnce.and.calledWith(true)
         })
@@ -149,6 +150,17 @@ describe('uncontrollable', () =>{
           Control.ControlledComponent.should.equal(Base)
         })
 
+        it('should work with stateless components', () => {
+          sinon.spy(console, 'error')
+          var Control  = method(() => null, { value: 'onChange' })
+
+          var instance = render(<Control defaultValue={10} defaultOpen />);
+
+          console.error.should.not.have.been.called;
+          expect(instance.refs.inner).to.not.exist;
+          console.error.restore();
+        })
+
         it('should pass through methods.', () => {
           var Control  = method(Base, { value: 'onChange' }, ['foo'])
             , instance = render(<Control defaultValue={10} defaultOpen />);
@@ -158,12 +170,19 @@ describe('uncontrollable', () =>{
           instance.refs.inner.should.exist
         })
 
+        it('should warn when passing through methods to stateless components', () => {
+          (function () {
+            method(() => null, { value: 'onChange' }, [ 'foo'])
+          })
+          .should.throw(/stateless function components.+Component.+foo/g)
+        })
+
         it('should track internally if not specified', () => {
           var Control  = method(Base, { value: 'onChange' })
             , instance = render(<Control />)
             , input = findAllTag(instance, 'input')[0]
 
-          trigger.change(React.findDOMNode(input), { value: 42})
+          trigger.change(findDOMNode(input), { value: 42})
 
           expect(instance._values).to.have.property('value')
             .that.equals(42)
@@ -173,11 +192,12 @@ describe('uncontrollable', () =>{
           var Control  = method(Base, { value: 'onChange', open: 'onToggle' })
             , instance = render(<Control defaultValue={10} defaultOpen />)
             , input = findAllTag(instance, 'input')[0]
-            , span = findClass(instance, 'open')
 
-          React.findDOMNode(input).value.should.equal('10')
+          findClass(instance, 'open')
 
-          trigger.change(React.findDOMNode(input), { value: 42})
+          findDOMNode(input).value.should.equal('10')
+
+          trigger.change(findDOMNode(input), { value: 42})
 
           expect(instance._values.value).to.equal(42)
         })
@@ -188,7 +208,8 @@ describe('uncontrollable', () =>{
           var Control  = method(Base, { value: 'onChange', open: 'onToggle' })
             , instance = render(<Control defaultValue={10} defaultOpen onChange={spy} />)
             , base = findType(instance, Base)
-            , span = findClass(instance, 'open')
+
+          findClass(instance, 'open')
 
           expect(()=>
             base.nonBatchingChange(42)).not.to.throw()
@@ -219,7 +240,7 @@ describe('uncontrollable', () =>{
           var instance = render(<Parent/>)
             , input = findAllTag(instance, 'input')[0]
 
-          trigger.change(React.findDOMNode(input), { value: 42 })
+          trigger.change(findDOMNode(input), { value: 42 })
 
           spy.callCount.should.equal(2)
           spy.firstCall.args[0].value.should.equal(5)
@@ -247,7 +268,7 @@ describe('uncontrollable', () =>{
           var instance = render(<Parent/>)
             , input = findAllTag(instance, 'input')[0]
 
-          trigger.change(React.findDOMNode(input), { value: 42 })
+          trigger.change(findDOMNode(input), { value: 42 })
 
           spy.callCount.should.equal(2)
           spy.firstCall.args[0].value.should.equal(5)
@@ -278,13 +299,13 @@ describe('uncontrollable', () =>{
 
         var child = this._render()
 
-        return React.render(child, this._mountPoint, cb);
+        return ReactDom.render(child, this._mountPoint, cb);
       }
 
       unmount() {
         if(!this._mountPoint) return
 
-        React.unmountComponentAtNode(this._mountPoint);
+        ReactDom.unmountComponentAtNode(this._mountPoint);
       }
 
       destroy() {
@@ -340,7 +361,7 @@ describe('uncontrollable', () =>{
       var instance = render(<Parent/>)
         , input = findAllTag(instance.layerInstance, 'input')[0]
 
-      trigger.change(React.findDOMNode(input), { value: 42 })
+      trigger.change(findDOMNode(input), { value: 42 })
 
       spy.callCount.should.equal(2)
       spy.firstCall.args[0].value.should.equal(5)
