@@ -103,7 +103,7 @@ export function each(obj, cb, thisArg){
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
-export function isReactComponent(component: mixed): boolean {
+export function isReactComponent(component) {
   return !!(
     component &&
     component.prototype &&
