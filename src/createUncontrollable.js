@@ -16,7 +16,7 @@ export default function createUncontrollable(mixins, set){
 
     invariant(isCompositeComponent || !methods.length,
       '[uncontrollable] stateless function components cannot pass through methods ' +
-      'becasue they have no associated instances. Check component: ' + displayName + ', ' +
+      'because they have no associated instances. Check component: ' + displayName + ', ' +
       'attempting to pass through methods: ' + methods.join(', ')
     )
     methods = utils.transform(methods, (obj, method) => {
