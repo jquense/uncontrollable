@@ -46,6 +46,7 @@ export default function createUncontrollable(mixins, set){
 
       /**
        * If a prop switches from controlled to Uncontrolled
+       * or if the prop's default counterpart changes
        * reset its value to the defaultValue
        */
       componentWillReceiveProps(nextProps){
@@ -57,6 +58,11 @@ export default function createUncontrollable(mixins, set){
            && utils.getValue(props, key) !== undefined)
            {
              this._values[key] = nextProps[utils.defaultKey(key)]
+           }
+          else if (utils.getValue(nextProps, utils.defaultKey(key))
+           !== utils.getValue(props, utils.defaultKey(key)))
+           {
+             this._values[key] = nextProps[utils.defaultKey(key)];
            }
         })
       },
