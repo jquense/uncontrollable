@@ -10,10 +10,10 @@ var render = TestUtils.renderIntoDocument
   , findType = TestUtils.findRenderedComponentWithType
   , trigger = TestUtils.Simulate;
 
-describe('uncontrollable', () =>{
+describe('uncontrollable', () => {
   var Base;
 
-  beforeEach(()=> {
+  beforeEach(() => {
     Base = React.createClass({
 
       propTypes: {
@@ -67,7 +67,7 @@ describe('uncontrollable', () =>{
     })
   })
 
-  describe('common behavior', ()=>{
+  describe('common behavior', () => {
     var obj = {
       'classic': uncontrol,
       'batching': batching
@@ -76,7 +76,7 @@ describe('uncontrollable', () =>{
     Object.keys(obj).forEach(type => {
       var method = obj[type];
 
-      describe(type, ()=> {
+      describe(type, () => {
 
         it('should warn when handlers are missing', () => {
           var Control  = method(Base, { value: 'onChange' })
@@ -161,7 +161,7 @@ describe('uncontrollable', () =>{
           console.error.restore();
         })
 
-        it('should pass through methods.', () => {
+        it('should pass through methods', () => {
           var Control  = method(Base, { value: 'onChange' }, ['foo'])
             , instance = render(<Control defaultValue={10} defaultOpen />);
 
@@ -211,8 +211,7 @@ describe('uncontrollable', () =>{
 
           findClass(instance, 'open')
 
-          expect(()=>
-            base.nonBatchingChange(42)).not.to.throw()
+          expect(() => base.nonBatchingChange(42)).not.to.throw()
 
           spy.should.have.been.calledOnce
 
@@ -254,7 +253,6 @@ describe('uncontrollable', () =>{
           var Parent = React.createClass({
             getInitialState(){ return { value: 5 } },
             render(){
-
               return (
                 <Control
                   ref='ctrl'
@@ -285,7 +283,7 @@ describe('uncontrollable', () =>{
     })
   })
 
-  describe('batching specific behavior', ()=>{
+  describe('batching specific behavior', () => {
     class Layer {
 
       constructor(container, render){
@@ -338,7 +336,7 @@ describe('uncontrollable', () =>{
         componentDidMount() {this._renderOverlay()},
         _renderOverlay() {
           if (!this._layer)
-            this._layer = new Layer(document.body, ()=> this._child)
+            this._layer = new Layer(document.body, () => this._child)
 
           this.layerInstance = this._layer.render()
         },
