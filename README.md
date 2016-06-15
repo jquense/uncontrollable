@@ -107,7 +107,7 @@ var SimpleDropdown = React.createClass({
 
 Notice how we don't track any state in our simple dropdown? This is great because a consumer of our module will have the all the flexibility to decide what the behavior of the dropdown should be. Also notice our public API (propTypes), it consists of common pattern: a property we want set (`value`, `open`), and a set of handlers that indicate _when_ we want them set (`onChange`, `onToggle`). It is up to the parent component to change the `value` and `open` props in response to the handlers.
 
-While this pattern offers a excellent amount of flexibility to consumers, it also requires them to write a bunch of boilerplate code that probably won't change much from use to use. In all likelihood they will always want to set `open` in response to `onToggle`, and only in rare cases will want to override that behavior. This is where the controlled/uncontrolled pattern comes in.
+While this pattern offers an excellent amount of flexibility to consumers, it also requires them to write a bunch of boilerplate code that probably won't change much from use to use. In all likelihood they will always want to set `open` in response to `onToggle`, and only in rare cases will want to override that behavior. This is where the controlled/uncontrolled pattern comes in.
 
 We want to just handle the open/onToggle case ourselves if the consumer doesn't provide a `open` prop (indicating that they want to control it). Rather than complicating our dropdown component with all that logic, obscuring the business logic of our dropdown, we can add it later, by taking our dropdown and wrapping it inside another component that handles that for us.
 
