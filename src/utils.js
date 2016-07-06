@@ -6,7 +6,7 @@ export function customPropType(handler, propType, name) {
   return function(props, propName) {
 
     if(props[propName] !== undefined) {
-      if ( !props[handler] ){
+      if ( !props[handler] ) {
         return new Error(
             'You have provided a `' + propName + '` prop to '
           + '`' + name + '` without an `' + handler + '` handler. This will render a read-only field. '
@@ -71,7 +71,7 @@ export function getLinkName(name){
 }
 
 
-export function defaultKey(key){
+export function defaultKey(key) {
   return 'default' + key.charAt(0).toUpperCase() + key.substr(1)
 }
 

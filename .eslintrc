@@ -12,10 +12,6 @@
   "plugins": [
     "eslint-plugin-react"
   ],
-  "globals": {
-    "sinon": true,
-    "expect": true,
-  },
   "rules": {
     "no-eval": 2,
     "strict": 0,

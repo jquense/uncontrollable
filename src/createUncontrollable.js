@@ -2,7 +2,8 @@ import React from 'react';
 import invariant from 'invariant';
 import * as utils from './utils';
 
-export default function createUncontrollable(mixins, set){
+
+export default function createUncontrollable(mixins, set) {
 
   return uncontrollable;
 
@@ -10,7 +11,15 @@ export default function createUncontrollable(mixins, set){
     var displayName = Component.displayName || Component.name || 'Component'
       , basePropTypes = utils.getType(Component).propTypes
       , isCompositeComponent = utils.isReactComponent(Component)
+      , controlledProps = Object.keys(controlledValues)
       , propTypes;
+
+
+    const OMIT_PROPS = [
+      'valueLink',
+      'checkedLink',
+      ...controlledProps.map(utils.defaultKey)
+    ];
 
     propTypes = utils.uncontrolledPropTypes(controlledValues, basePropTypes, displayName)
 
@@ -36,12 +45,13 @@ export default function createUncontrollable(mixins, set){
       ...methods,
 
       componentWillMount() {
-        var props = this.props
-          , keys  = Object.keys(controlledValues);
+        let props = this.props;
 
-        this._values = utils.transform(keys, function(values, key){
-          values[key] = props[utils.defaultKey(key)]
-        }, {})
+        this._values = {}
+
+        controlledProps.forEach(key => {
+          this._values[key] = props[utils.defaultKey(key)]
+        })
       },
 
       /**
@@ -49,24 +59,21 @@ export default function createUncontrollable(mixins, set){
        * reset its value to the defaultValue
        */
       componentWillReceiveProps(nextProps){
-        let props = this.props
-          , keys  = Object.keys(controlledValues);
+        let props = this.props;
 
-        keys.forEach(key => {
-          if (utils.getValue(nextProps, key) === undefined
-           && utils.getValue(props, key) !== undefined)
-           {
+        controlledProps.forEach(key => {
+          if (
+            utils.getValue(nextProps, key) === undefined &&
+            utils.getValue(props, key) !== undefined
+          ){
              this._values[key] = nextProps[utils.defaultKey(key)]
-           }
+          }
         })
       },
 
       render() {
         var newProps = {}
-          , {
-            valueLink
-          , checkedLink
-          , ...props} = this.props;
+          , props = omitProps(this.props);
 
         utils.each(controlledValues, (handle, propName) => {
           var linkPropName = utils.getLinkName(propName)
@@ -118,6 +125,17 @@ export default function createUncontrollable(mixins, set){
 
     function isProp(props, prop){
       return props[prop] !== undefined;
+    }
+
+    function omitProps(props) {
+      let result = {};
+
+      utils.each(props, (value, key) => {
+        if (OMIT_PROPS.indexOf(key) === -1)
+          result[key] = value;
+      })
+
+      return result;
     }
   }
 }

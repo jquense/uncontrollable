@@ -1,0 +1,9 @@
+{
+  "globals": {
+    "sinon": true,
+    "expect": true,
+  },
+  "rules": {
+    "no-console": 0,
+  }
+}

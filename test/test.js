@@ -1,14 +1,8 @@
 import React from 'react';
-import TestUtils from 'react-addons-test-utils';
+import tsp from 'teaspoon';
 import ReactDom, { findDOMNode } from 'react-dom';
 import uncontrol from '../src';
 import batching from '../src/batching';
-
-var render = TestUtils.renderIntoDocument
-  , findClass = TestUtils.findRenderedDOMComponentWithClass
-  , findAllTag = TestUtils.scryRenderedDOMComponentsWithTag
-  , findType = TestUtils.findRenderedComponentWithType
-  , trigger = TestUtils.Simulate;
 
 describe('uncontrollable', () => {
   var Base;
@@ -88,29 +82,29 @@ describe('uncontrollable', () => {
         })
 
         it('should work with valueLink', () => {
-          var changeSpy = sinon.spy()
+          var requestChange = sinon.spy()
             , Control  = method(Base, { value: 'onChange' })
-            , instance = render(<Control valueLink={{ value: 10, requestChange: changeSpy }} />)
-            , input = findAllTag(instance, 'input')[0]
 
-          findDOMNode(input).value.should.equal('10')
+          tsp(<Control valueLink={{ value: 10, requestChange }} />)
+            .render()
+            .first('input')
+            .tap(inst => inst.dom().value.should.equal('10'))
+            .trigger('change', { value: 42 })
 
-          trigger.change(findDOMNode(input), { value: 42 })
-
-          changeSpy.should.have.been.calledOnce.and.calledWith(42)
+          requestChange.should.have.been.calledOnce.and.calledWith(42)
         })
 
         it('should work with checkedLink', () => {
-          var changeSpy = sinon.spy()
+          var requestChange = sinon.spy()
             , Control  = method(Base, { checked: 'onChange' })
-            , instance = render(<Control checkedLink={{ value: false, requestChange: changeSpy }} />)
-            , input = findAllTag(instance, 'input')[1]
 
-          findDOMNode(input).checked.should.equal(false)
+          tsp(<Control checkedLink={{ value: false, requestChange }} />)
+            .render()
+            .single('input[type=checkbox]')
+            .tap(inst => inst.dom().checked.should.equal(false))
+            .trigger('change', { checked: true })
 
-          trigger.change(findDOMNode(input), { checked: true })
-
-          changeSpy.should.have.been.calledOnce.and.calledWith(true)
+            requestChange.should.have.been.calledOnce.and.calledWith(true)
         })
 
         it('should create defaultProp propTypes', () => {
@@ -120,7 +114,7 @@ describe('uncontrollable', () => {
             .that.equals(Base.propTypes.value)
         })
 
-        it('should passThrough base propTypes', () => {
+        it('should forward base propTypes', () => {
           var Control  = method(Base, { value: 'onChange' })
 
           Control.propTypes.should.have.property('defaultValue')
@@ -129,7 +123,10 @@ describe('uncontrollable', () => {
 
         it('should forward methods', () => {
           var Control  = method(Base, { value: 'onChange' }, ['foo', 'bar'])
-            , instance = render(<Control value={5} onChange={()=>{}}/>)
+
+          let instance = tsp(<Control value={5} onChange={()=>{}}/>)
+            .render()
+            .unwrap()
 
           expect(instance.foo).to.be.a('function')
           expect(instance.bar).to.be.a('function')
@@ -152,18 +149,23 @@ describe('uncontrollable', () => {
 
         it('should work with stateless components', () => {
           sinon.spy(console, 'error')
-          var Control  = method(() => null, { value: 'onChange' })
 
-          var instance = render(<Control defaultValue={10} defaultOpen />);
+          var Control  = method(() => <span />, { value: 'onChange' })
+
+          expect(
+            tsp(<Control defaultValue={10} defaultOpen />)
+              .render()
+              .unwrap()
+              .refs.inner
+          ).to.not.exist;
 
           console.error.should.not.have.been.called;
-          expect(instance.refs.inner).to.not.exist;
           console.error.restore();
         })
 
         it('should pass through methods', () => {
           var Control  = method(Base, { value: 'onChange' }, ['foo'])
-            , instance = render(<Control defaultValue={10} defaultOpen />);
+            , instance = tsp(<Control defaultValue={10} defaultOpen />).render().unwrap();
 
           instance.foo.should.be.a('function')
           instance.foo(2).should.equal(4)
@@ -179,43 +181,60 @@ describe('uncontrollable', () => {
 
         it('should track internally if not specified', () => {
           var Control  = method(Base, { value: 'onChange' })
-            , instance = render(<Control />)
-            , input = findAllTag(instance, 'input')[0]
 
-          trigger.change(findDOMNode(input), { value: 42})
+          let inst = tsp(<Control />).render()
 
-          expect(instance._values).to.have.property('value')
-            .that.equals(42)
+          inst
+            .first('input')
+            .trigger('change', { value: 42 })
+
+          inst.unwrap()._values.should.have.property('value').that.equals(42)
         })
 
         it('should allow for defaultProp', () => {
-          var Control  = method(Base, { value: 'onChange', open: 'onToggle' })
-            , instance = render(<Control defaultValue={10} defaultOpen />)
-            , input = findAllTag(instance, 'input')[0]
+          let Control  = method(Base, { value: 'onChange', open: 'onToggle' })
 
-          findClass(instance, 'open')
+          let inst = tsp(<Control defaultValue={10} defaultOpen />).render();
 
-          findDOMNode(input).value.should.equal('10')
+          inst.any('.open')
 
-          trigger.change(findDOMNode(input), { value: 42})
+          inst
+            .first('input')
+            .tap(inst => inst.dom().value.should.equal('10'))
+            .trigger('change', { value: 42 })
 
-          expect(instance._values.value).to.equal(42)
+          expect(inst.unwrap()._values.value).to.equal(42);
+        })
+
+        it('should not forward default props through', () => {
+          let Control  = method(Base, { value: 'onChange', open: 'onToggle' })
+
+          let inst = tsp(<Control defaultValue={10} defaultOpen />).render();
+
+          let props = inst
+            .find(Base)
+            .props()
+
+          props.should.not.contain.keys(['defaultValue', 'defaultOpen'])
+
+          props.should.contain.keys(['value', 'open'])
         })
 
         it('should not throw when not batching', () => {
-          var spy = sinon.spy();
+          let spy = sinon.spy();
 
-          var Control  = method(Base, { value: 'onChange', open: 'onToggle' })
-            , instance = render(<Control defaultValue={10} defaultOpen onChange={spy} />)
-            , base = findType(instance, Base)
+          let Control  = method(Base, { value: 'onChange', open: 'onToggle' })
 
-          findClass(instance, 'open')
+          let inst = tsp(<Control defaultValue={10} defaultOpen onChange={spy} />).render();
+          let base = inst.find(Base).unwrap();
+
+          inst.any('.open')
 
           expect(() => base.nonBatchingChange(42)).not.to.throw()
 
           spy.should.have.been.calledOnce
 
-          expect(instance._values.value).to.equal(42)
+          expect(inst.unwrap()._values.value).to.equal(42)
         })
 
         it('should update in the right order when controlled', () => {
@@ -236,10 +255,10 @@ describe('uncontrollable', () => {
             }
           })
 
-          var instance = render(<Parent/>)
-            , input = findAllTag(instance, 'input')[0]
-
-          trigger.change(findDOMNode(input), { value: 42 })
+          tsp(<Parent/>)
+            .render()
+            .first('input')
+            .trigger('change', { value: 42 })
 
           spy.callCount.should.equal(2)
           spy.firstCall.args[0].value.should.equal(5)
@@ -255,7 +274,6 @@ describe('uncontrollable', () => {
             render(){
               return (
                 <Control
-                  ref='ctrl'
                   onRender={spy}
                   defaultValue={this.state.value}
                 />
@@ -263,10 +281,11 @@ describe('uncontrollable', () => {
             }
           })
 
-          var instance = render(<Parent/>)
-            , input = findAllTag(instance, 'input')[0]
+          var inst = tsp(<Parent/>).render()
 
-          trigger.change(findDOMNode(input), { value: 42 })
+          inst
+            .first('input')
+            .trigger('change', { value: 42 })
 
           spy.callCount.should.equal(2)
           spy.firstCall.args[0].value.should.equal(5)
@@ -274,7 +293,7 @@ describe('uncontrollable', () => {
 
           spy.reset();
 
-          findType(instance.refs.ctrl, Base).nonBatchingChange(84);
+          inst.find(Base).unwrap().nonBatchingChange(84);
 
           spy.callCount.should.equal(1)
           spy.firstCall.args[0].value.should.equal(84)
@@ -343,23 +362,23 @@ describe('uncontrollable', () => {
 
         render(){
           this._child = (
-            <Control ref='ctrl'
+            <Control
               onRender={spy}
               value={this.state.value}
               onChange={value => this.setState({ value, called: true })}
             />
           )
 
-          return (
-            <div/>
-          )
+          return <div/>
         }
       })
 
-      var instance = render(<Parent/>)
-        , input = findAllTag(instance.layerInstance, 'input')[0]
+      let layer = tsp(<Parent/>).render().unwrap();
+      let inst = tsp(layer.layerInstance)
 
-      trigger.change(findDOMNode(input), { value: 42 })
+      inst
+        .first('input')
+        .trigger('change', { value: 42 })
 
       spy.callCount.should.equal(2)
       spy.firstCall.args[0].value.should.equal(5)
@@ -367,11 +386,10 @@ describe('uncontrollable', () => {
 
       spy.reset();
 
-      findType(instance.refs.ctrl, Base).nonBatchingChange(84);
+      inst.find(Base).unwrap().nonBatchingChange(84);
 
       spy.callCount.should.equal(1)
       spy.firstCall.args[0].value.should.equal(84)
     })
-
   })
 })
