@@ -3,7 +3,7 @@ import invariant from 'invariant';
 
 export function customPropType(handler, propType, name) {
 
-  return function(props, propName) {
+  return function(props, propName, wrappedName, ...args) {
 
     if(props[propName] !== undefined) {
       if ( !props[handler] ) {
@@ -13,7 +13,7 @@ export function customPropType(handler, propType, name) {
           + 'If the field should be mutable use `' + defaultKey(propName) + '`. Otherwise, set `' + handler + '`')
       }
 
-      return propType && propType(props, propName, name)
+      return propType && propType(props, propName, name, ...args)
     }
   }
 }
