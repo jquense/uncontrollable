@@ -111,14 +111,6 @@ describe('uncontrollable', () => {
           var Control  = method(Base, { value: 'onChange' })
 
           Control.propTypes.should.have.property('defaultValue')
-            .that.equals(Base.propTypes.value)
-        })
-
-        it('should forward base propTypes', () => {
-          var Control  = method(Base, { value: 'onChange' })
-
-          Control.propTypes.should.have.property('defaultValue')
-            .that.equals(Base.propTypes.value)
         })
 
         it('should forward methods', () => {

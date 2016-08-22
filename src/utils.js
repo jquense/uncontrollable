@@ -1,19 +1,24 @@
 import React from 'react';
 import invariant from 'invariant';
 
-export function customPropType(handler, propType, name) {
+function defaultPropType(controlledPropName, propType) {
+  return (props, name, ...args) => {
+    // never consider a defaultProp "required", bit a hack.
+    if (props[name] != null) {
+      return propType(props, name, ...args)
+    }
+  }
+}
 
-  return function(props, propName, wrappedName, ...args) {
-
-    if(props[propName] !== undefined) {
-      if ( !props[handler] ) {
+function readOnlyPropType(handler, name) {
+  return function(props, propName) {
+    if (props[propName] !== undefined) {
+      if (!props[handler]) {
         return new Error(
             'You have provided a `' + propName + '` prop to '
           + '`' + name + '` without an `' + handler + '` handler. This will render a read-only field. '
           + 'If the field should be mutable use `' + defaultKey(propName) + '`. Otherwise, set `' + handler + '`')
       }
-
-      return propType && propType(props, propName, name, ...args)
     }
   }
 }
@@ -30,10 +35,10 @@ export function uncontrolledPropTypes(controlledValues, basePropTypes, displayNa
         , displayName
         , prop)
 
-      obj[prop] = customPropType(handler, type, displayName)
+      obj[prop] = readOnlyPropType(handler, displayName)
 
-      if (type !== undefined )
-        obj[defaultKey(prop)] = type;
+      if (type !== undefined)
+        obj[defaultKey(prop)] = defaultPropType(prop, type);
 
     }, propTypes);
   }
@@ -95,6 +100,10 @@ export function each(obj, cb, thisArg){
 }
 
 
+export function has(o, k){
+  return o ? Object.prototype.hasOwnProperty.call(o, k) : false
+}
+
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -109,9 +118,4 @@ export function isReactComponent(component) {
     component.prototype &&
     component.prototype.isReactComponent
   );
-}
-
-
-export function has(o, k){
-  return o ? Object.prototype.hasOwnProperty.call(o, k) : false
 }
