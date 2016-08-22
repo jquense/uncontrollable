@@ -107,12 +107,6 @@ describe('uncontrollable', () => {
             requestChange.should.have.been.calledOnce.and.calledWith(true)
         })
 
-        it('should create defaultProp propTypes', () => {
-          var Control  = method(Base, { value: 'onChange' })
-
-          Control.propTypes.should.have.property('defaultValue')
-        })
-
         it('should forward methods', () => {
           var Control  = method(Base, { value: 'onChange' }, ['foo', 'bar'])
 
@@ -137,6 +131,17 @@ describe('uncontrollable', () => {
           var Control  = method(Base, { value: 'onChange' })
 
           Control.ControlledComponent.should.equal(Base)
+        })
+
+        it('should expose the original instance', () => {
+          var Control  = method(Base, { value: 'onChange' })
+
+          expect(
+            tsp(<Control defaultValue={10} defaultOpen />)
+              .render()
+              .unwrap()
+              .getControlledInstance()
+          ).to.exist;
         })
 
         it('should work with stateless components', () => {

@@ -14,7 +14,6 @@ export default function createUncontrollable(mixins, set) {
       , controlledProps = Object.keys(controlledValues)
       , propTypes;
 
-
     const OMIT_PROPS = [
       'valueLink',
       'checkedLink',
@@ -28,6 +27,7 @@ export default function createUncontrollable(mixins, set) {
       'because they have no associated instances. Check component: ' + displayName + ', ' +
       'attempting to pass through methods: ' + methods.join(', ')
     )
+
     methods = utils.transform(methods, (obj, method) => {
       obj[method] = function(...args){
         return this.refs.inner[method](...args)
@@ -69,6 +69,10 @@ export default function createUncontrollable(mixins, set) {
              this._values[key] = nextProps[utils.defaultKey(key)]
           }
         })
+      },
+
+      getControlledInstance() {
+        return this.refs.inner;
       },
 
       render() {

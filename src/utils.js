@@ -1,15 +1,6 @@
 import React from 'react';
 import invariant from 'invariant';
 
-function defaultPropType(propType) {
-  return (props, name, ...args) => {
-    // never consider a defaultProp "required", bit a hack.
-    if (props[name] != null) {
-      return propType(props, name, ...args)
-    }
-  }
-}
-
 function readOnlyPropType(handler, name) {
   return function(props, propName) {
     if (props[propName] !== undefined) {
@@ -28,18 +19,12 @@ export function uncontrolledPropTypes(controlledValues, basePropTypes, displayNa
 
   if (process.env.NODE_ENV !== 'production' && basePropTypes) {
     transform(controlledValues, function(obj, handler, prop){
-      var type = basePropTypes[prop];
-
       invariant(typeof handler === 'string' && handler.trim().length,
           'Uncontrollable - [%s]: the prop `%s` needs a valid handler key name in order to make it uncontrollable'
         , displayName
         , prop)
 
       obj[prop] = readOnlyPropType(handler, displayName)
-
-      if (type !== undefined)
-        obj[defaultKey(prop)] = defaultPropType(type);
-
     }, propTypes);
   }
 
