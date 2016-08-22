@@ -1,7 +1,7 @@
 import React from 'react';
 import invariant from 'invariant';
 
-function defaultPropType(controlledPropName, propType) {
+function defaultPropType(propType) {
   return (props, name, ...args) => {
     // never consider a defaultProp "required", bit a hack.
     if (props[name] != null) {
@@ -38,7 +38,7 @@ export function uncontrolledPropTypes(controlledValues, basePropTypes, displayNa
       obj[prop] = readOnlyPropType(handler, displayName)
 
       if (type !== undefined)
-        obj[defaultKey(prop)] = defaultPropType(prop, type);
+        obj[defaultKey(prop)] = defaultPropType(type);
 
     }, propTypes);
   }
