@@ -1,4 +1,4 @@
-import ReactUpdates from 'react/lib/ReactUpdates';
+import ReactUpdates from 'react-dom/lib/ReactUpdates';
 import createUncontrollable  from './createUncontrollable';
 
 let mixin = {
