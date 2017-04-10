@@ -1,64 +1,78 @@
 import React from 'react';
 import tsp from 'teaspoon';
 import ReactDom, { findDOMNode } from 'react-dom';
+import PropTypes from 'prop-types';
+
 import uncontrol from '../src';
 import batching from '../src/batching';
+
+import chai from 'chai';
+import sinon from 'sinon';
+import dirtyChai from 'dirty-chai';
+import sinonChai from 'sinon-chai';
+
+chai.should();
+chai.use(dirtyChai);
+chai.use(sinonChai);
+
+const expect = chai.expect;
 
 describe('uncontrollable', () => {
   var Base;
 
   beforeEach(() => {
-    Base = React.createClass({
+    Base = class extends React.Component {
 
-      propTypes: {
-        value:    React.PropTypes.number,
-        checked:  React.PropTypes.bool,
-        onChange: React.PropTypes.func,
+      static propTypes = {
+        value: PropTypes.number,
+        checked: PropTypes.bool,
+        onChange: PropTypes.func,
 
-        open:     React.PropTypes.bool,
-        onToggle: React.PropTypes.func,
+        open: PropTypes.bool,
+        onToggle: PropTypes.func,
 
-        onRender: React.PropTypes.func
-      },
+        onRender: PropTypes.func
+      };
 
-      nonBatchingChange(val){
+      nonBatchingChange = (val) => {
         var target = findDOMNode(this.refs.input)
 
         if (val) target.value = val
 
         this.props.onChange(val)
-      },
+      }
 
       render() {
         if ( this.props.onRender )
           this.props.onRender(this.props)
 
+        const { value, checked } = this.props;
+
         return (
           <div>
             <button onClick={this.props.onToggle}>toggle</button>
-            { this.props.open &&
+            {this.props.open &&
               <span className='open'>open!</span>
             }
             <input className='valueInput'
               ref='input'
-              value={this.props.value}
+              value={value == null ? '' : value}
               onChange={ e => this.props.onChange(e.value)}/>
             <input type='checkbox'
-              value={this.props.value}
-              checked={this.props.checked}
+              checked={checked ? '' : null}
+              value={value == null ? '' : value}
               onChange={ e => this.props.onChange(e.checked)}/>
           </div>)
-      },
+      }
 
       foo(num){
         return num + num;
-      },
-
-      bar(){
-        return 'value: ' + this.props.value
       }
 
-    })
+      bar = () => {
+        return 'value: ' + this.props.value
+      }
+    }
   })
 
   describe('common behavior', () => {
@@ -141,7 +155,7 @@ describe('uncontrollable', () => {
               .render()
               .unwrap()
               .getControlledInstance()
-          ).to.exist;
+          ).to.exist();
         })
 
         it('should work with stateless components', () => {
@@ -154,9 +168,9 @@ describe('uncontrollable', () => {
               .render()
               .unwrap()
               .refs.inner
-          ).to.not.exist;
+          ).to.not.exist();
 
-          console.error.should.not.have.been.called;
+          console.error.should.not.have.been.called();
           console.error.restore();
         })
 
@@ -166,7 +180,7 @@ describe('uncontrollable', () => {
 
           instance.foo.should.be.a('function')
           instance.foo(2).should.equal(4)
-          instance.refs.inner.should.exist
+          instance.refs.inner.should.exist()
         })
 
         it('should warn when passing through methods to stateless components', () => {
@@ -229,7 +243,7 @@ describe('uncontrollable', () => {
 
           expect(() => base.nonBatchingChange(42)).not.to.throw()
 
-          spy.should.have.been.calledOnce
+          spy.should.have.been.calledOnce()
 
           expect(inst.unwrap()._values.value).to.equal(42)
         })
@@ -238,10 +252,9 @@ describe('uncontrollable', () => {
           var Control = method(Base, { value: 'onChange' })
             , spy = sinon.spy();
 
-          var Parent = React.createClass({
-            getInitialState(){ return { value: 5 } },
-            render(){
-
+          class Parent extends React.Component {
+            state = { value: 5 }
+            render() {
               return (
                 <Control
                   onRender={spy}
@@ -250,7 +263,7 @@ describe('uncontrollable', () => {
                 />
               )
             }
-          })
+          }
 
           tsp(<Parent/>)
             .render()
@@ -266,9 +279,9 @@ describe('uncontrollable', () => {
           var Control  = method(Base, { value: 'onChange' })
             , spy = sinon.spy();
 
-          var Parent = React.createClass({
-            getInitialState(){ return { value: 5 } },
-            render(){
+           class Parent extends React.Component {
+            state = { value: 5 }
+            render() {
               return (
                 <Control
                   onRender={spy}
@@ -276,7 +289,7 @@ describe('uncontrollable', () => {
                 />
               )
             }
-          })
+          }
 
           var inst = tsp(<Parent/>).render()
 
@@ -341,23 +354,23 @@ describe('uncontrollable', () => {
       var Control  = batching(Base, { value: 'onChange' })
         , spy = sinon.spy();
 
-      var Parent = React.createClass({
-        getInitialState(){ return { value: 5 } },
+       class Parent extends React.Component {
+        state = { value: 5 }
 
         componentWillUnmount () {
           this._layer.destroy()
           this._layer = null
-        },
-        componentDidUpdate(){this._renderOverlay()},
-        componentDidMount() {this._renderOverlay()},
+        }
+        componentDidUpdate(){this._renderOverlay()}
+        componentDidMount() {this._renderOverlay()}
         _renderOverlay() {
           if (!this._layer)
             this._layer = new Layer(document.body, () => this._child)
 
           this.layerInstance = this._layer.render()
-        },
+        }
 
-        render(){
+        render() {
           this._child = (
             <Control
               onRender={spy}
@@ -368,7 +381,7 @@ describe('uncontrollable', () => {
 
           return <div/>
         }
-      })
+      }
 
       let layer = tsp(<Parent/>).render().unwrap();
       let inst = tsp(layer.layerInstance)

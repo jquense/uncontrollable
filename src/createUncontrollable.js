@@ -3,7 +3,7 @@ import invariant from 'invariant';
 import * as utils from './utils';
 
 
-export default function createUncontrollable(mixins, set) {
+export default function createUncontrollable(mixin, set) {
 
   return uncontrollable;
 
@@ -34,15 +34,15 @@ export default function createUncontrollable(mixins, set) {
       }
     }, {})
 
-    let component = React.createClass({
+    let component = class extends React.Component {
 
-      displayName: `Uncontrolled(${displayName})`,
+      static displayName = `Uncontrolled(${displayName})`;
 
-      mixins,
+      static propTypes = propTypes;
 
-      propTypes,
-
-      ...methods,
+      shouldComponentUpdate(...args) {
+        return !mixin.shouldComponentUpdate || mixin.shouldComponentUpdate.apply(this, args);
+      }
 
       componentWillMount() {
         let props = this.props;
@@ -52,7 +52,7 @@ export default function createUncontrollable(mixins, set) {
         controlledProps.forEach(key => {
           this._values[key] = props[utils.defaultKey(key)]
         })
-      },
+      }
 
       /**
        * If a prop switches from controlled to Uncontrolled
@@ -60,6 +60,10 @@ export default function createUncontrollable(mixins, set) {
        */
       componentWillReceiveProps(nextProps){
         let props = this.props;
+
+        if (mixin.componentWillReceiveProps) {
+          mixin.componentWillReceiveProps.call(this, nextProps);
+        }
 
         controlledProps.forEach(key => {
           if (
@@ -69,11 +73,15 @@ export default function createUncontrollable(mixins, set) {
              this._values[key] = nextProps[utils.defaultKey(key)]
           }
         })
-      },
+      }
+
+      componentWillUnmount() {
+        this.unmounted = true;
+      }
 
       getControlledInstance() {
         return this.refs.inner;
-      },
+      }
 
       render() {
         var newProps = {}
@@ -101,8 +109,9 @@ export default function createUncontrollable(mixins, set) {
 
         return React.createElement(Component, newProps);
       }
+    }
 
-    })
+    Object.assign(component.prototype, methods)
 
     component.ControlledComponent = Component
 

@@ -1,6 +1,7 @@
 import ReactUpdates from 'react-dom/lib/ReactUpdates';
 import createUncontrollable  from './createUncontrollable';
 
+
 let mixin = {
   componentWillReceiveProps() {
     // if the update already happend then don't fire it twice
@@ -17,14 +18,14 @@ function set(component, propName, handler, value, args) {
 
   ReactUpdates.batchedUpdates(()=> {
     ReactUpdates.asap(() => {
-      if (component.isMounted() && component._needsUpdate) {
+      if (!component.unmounted && component._needsUpdate) {
         component._needsUpdate = false
 
-        if (component.isMounted())
+        if (!component.unmounted)
           component.forceUpdate()
       }
     })
   })
 }
 
-export default createUncontrollable([ mixin ], set)
+export default createUncontrollable(mixin, set)

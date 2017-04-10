@@ -15,9 +15,9 @@ function set(component, propName, handler, value, args) {
   }
 
   component._values[propName] = value
-  
-  if (component.isMounted())
+
+  if (!component.unmounted)
     component.forceUpdate()
 }
 
-export default createUncontrollable([ mixin ], set)
+export default createUncontrollable(mixin, set)

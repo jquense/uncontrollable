@@ -1,9 +1,10 @@
 {
+  "extends": "jason/jest",
   "globals": {
     "sinon": true,
-    "expect": true,
+    "expect": true
   },
   "rules": {
-    "no-console": 0,
+    "no-console": 0
   }
 }
