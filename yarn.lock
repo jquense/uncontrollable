@@ -1895,7 +1895,7 @@ fb-watchman@^2.0.0:
   dependencies:
     bser "^2.0.0"
 
-fbjs@^0.8.4, fbjs@^0.8.9:
+fbjs@^0.8.9:
   version "0.8.12"
   resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-0.8.12.tgz#10b5d92f76d45575fd63a217d4ea02bea2f8ed04"
   dependencies:
@@ -3585,13 +3585,6 @@ rc@^1.1.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-"react-addons-test-utils@^0.14.0-rc1 || ^15.0":
-  version "15.5.1"
-  resolved "https://registry.yarnpkg.com/react-addons-test-utils/-/react-addons-test-utils-15.5.1.tgz#e0d258cda2a122ad0dff69f838260d0c3958f5f7"
-  dependencies:
-    fbjs "^0.8.4"
-    object-assign "^4.1.0"
-
 react-dom@^15.4.0:
   version "15.5.3"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-15.5.3.tgz#2ee127ce942df55da53111ae303316e68072b5c5"
@@ -3600,6 +3593,13 @@ react-dom@^15.4.0:
     loose-envify "^1.1.0"
     object-assign "^4.1.0"
     prop-types "~15.5.0"
+
+react-test-renderer@^15.5.4:
+  version "15.5.4"
+  resolved "https://registry.yarnpkg.com/react-test-renderer/-/react-test-renderer-15.5.4.tgz#d4ebb23f613d685ea8f5390109c2d20fbf7c83bc"
+  dependencies:
+    fbjs "^0.8.9"
+    object-assign "^4.1.0"
 
 react@^15.4.0:
   version "15.5.3"
@@ -4193,16 +4193,16 @@ tar@^2.2.1:
     fstream "^1.0.2"
     inherits "2"
 
-teaspoon@^6.4.1:
-  version "6.4.3"
-  resolved "https://registry.yarnpkg.com/teaspoon/-/teaspoon-6.4.3.tgz#35a67874b57d734757d50058fe8b0c6413a82ef6"
+teaspoon@^6.5.0:
+  version "6.5.0"
+  resolved "https://registry.yarnpkg.com/teaspoon/-/teaspoon-6.5.0.tgz#9875e70db2940faf70dc206e0b021b0eace534f9"
   dependencies:
     bill "^3.2.6"
     dom-helpers "^2.4.0"
     invariant "^2.2.0"
     lodash "^3.10.1"
     promise "^7.1.1"
-    react-addons-test-utils "^0.14.0-rc1 || ^15.0"
+    react-test-renderer "^15.5.4"
     warning "^2.1.0"
 
 test-exclude@^4.0.3:

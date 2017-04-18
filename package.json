@@ -32,7 +32,9 @@
   "release-script": {
     "altPkgRootFolder": "lib"
   },
-  "jest": {},
+  "jest": {
+    "rootDir": "./test"
+  },
   "devDependencies": {
     "babel-cli": "^6.7.5",
     "babel-core": "^6.7.6",
@@ -57,7 +59,7 @@
     "sinon": "^1.17.3",
     "sinon-chai": "^2.9.0",
     "style-loader": "^0.8.3",
-    "teaspoon": "^6.4.1",
+    "teaspoon": "^6.5.0",
     "webpack": "^1.4.15",
     "webpack-dev-server": "^1.7.0"
   },
