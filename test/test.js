@@ -35,7 +35,7 @@ describe('uncontrollable', () => {
       };
 
       nonBatchingChange = (val) => {
-        var target = findDOMNode(this.refs.input)
+        var target = findDOMNode(this.input)
 
         if (val) target.value = val
 
@@ -55,7 +55,7 @@ describe('uncontrollable', () => {
               <span className='open'>open!</span>
             }
             <input className='valueInput'
-              ref='input'
+              ref={input => this.input = input}
               value={value == null ? '' : value}
               onChange={ e => this.props.onChange(e.value)}/>
             <input type='checkbox'
@@ -167,7 +167,7 @@ describe('uncontrollable', () => {
             tsp(<Control defaultValue={10} defaultOpen />)
               .render()
               .unwrap()
-              .refs.inner
+              .inner
           ).to.not.exist();
 
           console.error.should.not.have.been.called();
@@ -180,7 +180,7 @@ describe('uncontrollable', () => {
 
           instance.foo.should.be.a('function')
           instance.foo(2).should.equal(4)
-          instance.refs.inner.should.exist()
+          instance.inner.should.exist()
         })
 
         it('should warn when passing through methods to stateless components', () => {

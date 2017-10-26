@@ -30,7 +30,7 @@ export default function createUncontrollable(mixin, set) {
 
     methods = utils.transform(methods, (obj, method) => {
       obj[method] = function(...args){
-        return this.refs.inner[method](...args)
+        return this.inner[method](...args)
       }
     }, {})
 
@@ -80,7 +80,7 @@ export default function createUncontrollable(mixin, set) {
       }
 
       getControlledInstance() {
-        return this.refs.inner;
+        return this.inner;
       }
 
       render() {
@@ -104,7 +104,7 @@ export default function createUncontrollable(mixin, set) {
         newProps = {
           ...props,
           ...newProps,
-          ref: isCompositeComponent ? 'inner' : null
+          ref: input => this.inner = isCompositeComponent ? input : null
         }
 
         return React.createElement(Component, newProps);
