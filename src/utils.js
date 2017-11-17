@@ -89,18 +89,6 @@ export function has(o, k){
   return o ? Object.prototype.hasOwnProperty.call(o, k) : false
 }
 
-/**
- * Copyright (c) 2013-present, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- */
 export function isReactComponent(component) {
-  return !!(
-    component &&
-    component.prototype &&
-    component.prototype.isReactComponent
-  );
+  return typeof component === 'function' && component.prototype.isReactComponent;
 }
