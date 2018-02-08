@@ -1,28 +1,17 @@
-import React from 'react';
-import tsp from 'teaspoon';
-import ReactDom, { findDOMNode } from 'react-dom';
-import PropTypes from 'prop-types';
+import PropTypes from 'prop-types'
+import React from 'react'
+import Enzyme, { mount } from 'enzyme'
+import Adapter from 'enzyme-adapter-react-16'
 
-import uncontrol from '../src';
-import batching from '../src/batching';
+import uncontrollable from '../src'
 
-import chai from 'chai';
-import sinon from 'sinon';
-import dirtyChai from 'dirty-chai';
-import sinonChai from 'sinon-chai';
-
-chai.should();
-chai.use(dirtyChai);
-chai.use(sinonChai);
-
-const expect = chai.expect;
+Enzyme.configure({ adapter: new Adapter() })
 
 describe('uncontrollable', () => {
-  var Base;
+  var Base
 
   beforeEach(() => {
     Base = class extends React.Component {
-
       static propTypes = {
         value: PropTypes.number,
         checked: PropTypes.bool,
@@ -31,11 +20,11 @@ describe('uncontrollable', () => {
         open: PropTypes.bool,
         onToggle: PropTypes.func,
 
-        onRender: PropTypes.func
-      };
+        onRender: PropTypes.func,
+      }
 
-      nonBatchingChange = (val) => {
-        var target = findDOMNode(this.refs.input)
+      handleChange = val => {
+        var target = this.input
 
         if (val) target.value = val
 
@@ -43,30 +32,32 @@ describe('uncontrollable', () => {
       }
 
       render() {
-        if ( this.props.onRender )
-          this.props.onRender(this.props)
+        if (this.props.onRender) this.props.onRender(this.props)
 
-        const { value, checked } = this.props;
+        const { value, checked } = this.props
 
         return (
           <div>
             <button onClick={this.props.onToggle}>toggle</button>
-            {this.props.open &&
-              <span className='open'>open!</span>
-            }
-            <input className='valueInput'
-              ref='input'
+            {this.props.open && <span className="open">open!</span>}
+            <input
+              className="valueInput"
+              ref={r => { this.input = r}}
               value={value == null ? '' : value}
-              onChange={ e => this.props.onChange(e.value)}/>
-            <input type='checkbox'
+              onChange={e => this.props.onChange(e.value)}
+            />
+            <input
+              type="checkbox"
               checked={checked ? '' : null}
               value={value == null ? '' : value}
-              onChange={ e => this.props.onChange(e.checked)}/>
-          </div>)
+              onChange={e => this.props.onChange(e.checked)}
+            />
+          </div>
+        )
       }
 
-      foo(num){
-        return num + num;
+      foo(num) {
+        return num + num
       }
 
       bar = () => {
@@ -75,331 +66,212 @@ describe('uncontrollable', () => {
     }
   })
 
-  describe('common behavior', () => {
-    var obj = {
-      'classic': uncontrol,
-      'batching': batching
-    }
+  describe('uncontrollable', () => {
+    it('should warn when handlers are missing', () => {
+      var Control = uncontrollable(Base, { value: 'onChange' })
 
-    Object.keys(obj).forEach(type => {
-      var method = obj[type];
-
-      describe(type, () => {
-
-        it('should warn when handlers are missing', () => {
-          var Control  = method(Base, { value: 'onChange' })
-
-          Control.propTypes.value({ value: 3 }, 'value')
-            .message.should.contain(
-              'You have provided a `value` prop to `Base` without an `onChange` ' +
-              'handler. This will render a read-only field.')
-        })
-
-        it('should work with valueLink', () => {
-          var requestChange = sinon.spy()
-            , Control  = method(Base, { value: 'onChange' })
-
-          tsp(<Control valueLink={{ value: 10, requestChange }} />)
-            .render()
-            .first('input')
-            .tap(inst => inst.dom().value.should.equal('10'))
-            .trigger('change', { value: 42 })
-
-          requestChange.should.have.been.calledOnce.and.calledWith(42)
-        })
-
-        it('should work with checkedLink', () => {
-          var requestChange = sinon.spy()
-            , Control  = method(Base, { checked: 'onChange' })
-
-          tsp(<Control checkedLink={{ value: false, requestChange }} />)
-            .render()
-            .single('input[type=checkbox]')
-            .tap(inst => inst.dom().checked.should.equal(false))
-            .trigger('change', { checked: true })
-
-            requestChange.should.have.been.calledOnce.and.calledWith(true)
-        })
-
-        it('should forward methods', () => {
-          var Control  = method(Base, { value: 'onChange' }, ['foo', 'bar'])
-
-          let instance = tsp(<Control value={5} onChange={()=>{}}/>)
-            .render()
-            .unwrap()
-
-          expect(instance.foo).to.be.a('function')
-          expect(instance.bar).to.be.a('function')
-
-          expect(instance.foo(10)).to.be.equal(20)
-          expect(instance.bar()).to.be.equal('value: 5')
-        })
-
-        it('should adjust displayName', () => {
-          var Control  = method(Base, { value: 'onChange' })
-
-          Control.displayName.should.equal('Uncontrolled(Base)')
-        })
-
-        it('should expose the original component', () => {
-          var Control  = method(Base, { value: 'onChange' })
-
-          Control.ControlledComponent.should.equal(Base)
-        })
-
-        it('should expose the original instance', () => {
-          var Control  = method(Base, { value: 'onChange' })
-
-          expect(
-            tsp(<Control defaultValue={10} defaultOpen />)
-              .render()
-              .unwrap()
-              .getControlledInstance()
-          ).to.exist();
-        })
-
-        it('should work with stateless components', () => {
-          sinon.spy(console, 'error')
-
-          var Control  = method(() => <span />, { value: 'onChange' })
-
-          expect(
-            tsp(<Control defaultValue={10} defaultOpen />)
-              .render()
-              .unwrap()
-              .refs.inner
-          ).to.not.exist();
-
-          console.error.should.not.have.been.called();
-          console.error.restore();
-        })
-
-        it('should pass through methods', () => {
-          var Control  = method(Base, { value: 'onChange' }, ['foo'])
-            , instance = tsp(<Control defaultValue={10} defaultOpen />).render().unwrap();
-
-          instance.foo.should.be.a('function')
-          instance.foo(2).should.equal(4)
-          instance.refs.inner.should.exist()
-        })
-
-        it('should warn when passing through methods to stateless components', () => {
-          (function () {
-            method(() => null, { value: 'onChange' }, [ 'foo'])
-          })
-          .should.throw(/stateless function components.+Component.+foo/g)
-        })
-
-        it('should track internally if not specified', () => {
-          var Control  = method(Base, { value: 'onChange' })
-
-          let inst = tsp(<Control />).render()
-
-          inst
-            .first('input')
-            .trigger('change', { value: 42 })
-
-          inst.unwrap()._values.should.have.property('value').that.equals(42)
-        })
-
-        it('should allow for defaultProp', () => {
-          let Control  = method(Base, { value: 'onChange', open: 'onToggle' })
-
-          let inst = tsp(<Control defaultValue={10} defaultOpen />).render();
-
-          inst.any('.open')
-
-          inst
-            .first('input')
-            .tap(inst => inst.dom().value.should.equal('10'))
-            .trigger('change', { value: 42 })
-
-          expect(inst.unwrap()._values.value).to.equal(42);
-        })
-
-        it('should not forward default props through', () => {
-          let Control  = method(Base, { value: 'onChange', open: 'onToggle' })
-
-          let inst = tsp(<Control defaultValue={10} defaultOpen />).render();
-
-          let props = inst
-            .find(Base)
-            .props()
-
-          props.should.not.contain.keys(['defaultValue', 'defaultOpen'])
-
-          props.should.contain.keys(['value', 'open'])
-        })
-
-        it('should not throw when not batching', () => {
-          let spy = sinon.spy();
-
-          let Control  = method(Base, { value: 'onChange', open: 'onToggle' })
-
-          let inst = tsp(<Control defaultValue={10} defaultOpen onChange={spy} />).render();
-          let base = inst.find(Base).unwrap();
-
-          inst.any('.open')
-
-          expect(() => base.nonBatchingChange(42)).not.to.throw()
-
-          spy.should.have.been.calledOnce()
-
-          expect(inst.unwrap()._values.value).to.equal(42)
-        })
-
-        it('should update in the right order when controlled', () => {
-          var Control = method(Base, { value: 'onChange' })
-            , spy = sinon.spy();
-
-          class Parent extends React.Component {
-            state = { value: 5 }
-            render() {
-              return (
-                <Control
-                  onRender={spy}
-                  value={this.state.value}
-                  onChange={value => this.setState({ value })}
-                />
-              )
-            }
-          }
-
-          tsp(<Parent/>)
-            .render()
-            .first('input')
-            .trigger('change', { value: 42 })
-
-          spy.callCount.should.equal(2)
-          spy.firstCall.args[0].value.should.equal(5)
-          spy.secondCall.args[0].value.should.equal(42)
-        })
-
-        it('should update in the right order', () => {
-          var Control  = method(Base, { value: 'onChange' })
-            , spy = sinon.spy();
-
-           class Parent extends React.Component {
-            state = { value: 5 }
-            render() {
-              return (
-                <Control
-                  onRender={spy}
-                  defaultValue={this.state.value}
-                />
-              )
-            }
-          }
-
-          var inst = tsp(<Parent/>).render()
-
-          inst
-            .first('input')
-            .trigger('change', { value: 42 })
-
-          spy.callCount.should.equal(2)
-          spy.firstCall.args[0].value.should.equal(5)
-          spy.secondCall.args[0].value.should.equal(42)
-
-          spy.reset();
-
-          inst.find(Base).unwrap().nonBatchingChange(84);
-
-          spy.callCount.should.equal(1)
-          spy.firstCall.args[0].value.should.equal(84)
-        })
-      })
+      expect(Control.propTypes.value({ value: 3 }, 'value').message).toContain(
+        'You have provided a `value` prop to `Base` without an `onChange` ' +
+          'handler prop. This will render a read-only field.'
+      )
     })
-  })
 
-  describe('batching specific behavior', () => {
-    class Layer {
+    it('should include default PropTypes', () => {
+      var Control = uncontrollable(Base, { value: 'onChange' })
 
-      constructor(container, render){
-        this._container = container
-        this._render = render
-      }
+      expect(Control.propTypes.defaultValue).not.toBeNull()
+    })
 
-      render(cb){
-        if (!this._mountPoint)
-          this._createMountPoint();
+    it('should forward uncontrollables', () => {
+      var Control = uncontrollable(Base, { value: 'onChange' }, ['foo', 'bar'])
 
-        var child = this._render()
+      let instance = mount(<Control value={5} onChange={() => {}} />).instance()
 
-        return ReactDom.render(child, this._mountPoint, cb);
-      }
+      expect(typeof instance.foo).toBe('function')
+      expect(typeof instance.bar).toBe('function')
 
-      unmount() {
-        if(!this._mountPoint) return
+      expect(instance.foo(10)).toEqual(20)
+      expect(instance.bar()).toEqual('value: 5')
+    })
 
-        ReactDom.unmountComponentAtNode(this._mountPoint);
-      }
+    it('should adjust displayName', () => {
+      var Control = uncontrollable(Base, { value: 'onChange' })
 
-      destroy() {
-        this.unmount()
+      expect(Control.displayName).toEqual('Uncontrolled(Base)')
+    })
 
-        if (this._mountPoint){
-          this._container.removeChild(this._mountPoint)
-          this._mountPoint = null;
-        }
-      }
+    it('should expose the original component', () => {
+      var Control = uncontrollable(Base, { value: 'onChange' })
 
-      _createMountPoint() {
-        this._mountPoint = document.createElement('div');
-        this._container.appendChild(this._mountPoint);
-      }
-    }
+      expect(Control.ControlledComponent).toEqual(Base)
+    })
 
-    it('should update correctly in a Layer', () => {
-      var Control  = batching(Base, { value: 'onChange' })
-        , spy = sinon.spy();
+    it('should expose the original instance', () => {
+      var Control = uncontrollable(Base, { value: 'onChange' })
 
-       class Parent extends React.Component {
+      expect(
+        mount(<Control defaultValue={10} defaultOpen />)
+          .instance()
+          .getControlledInstance()
+      ).toEqual(expect.anything())
+    })
+
+    it('should work with stateless components', () => {
+      jest.spyOn(console, 'error')
+
+      var Control = uncontrollable(() => <span />, { value: 'onChange' })
+
+      expect(
+        mount(<Control defaultValue={10} defaultOpen />).instance().inner
+      ).not.toEqual(expect.anything())
+
+      expect(console.error).not.toHaveBeenCalled()
+      console.error.mockRestore()
+    })
+
+    it('should pass through uncontrollables', () => {
+      var Control = uncontrollable(Base, { value: 'onChange' }, ['foo']),
+        instance = mount(<Control defaultValue={10} defaultOpen />).instance()
+
+      expect(typeof instance.foo).toEqual('function')
+      expect(instance.foo(2)).toEqual(4)
+      expect(instance.inner).toEqual(expect.anything())
+    })
+
+    it('should warn when passing through uncontrollables to stateless components', () => {
+      expect(() => {
+        uncontrollable(() => null, { value: 'onChange' }, ['foo'])
+      }).toThrow(/stateless function components.+Component.+foo/g)
+    })
+
+    it('should track internally if not specified', () => {
+      var Control = uncontrollable(Base, { value: 'onChange' })
+
+      let inst = mount(<Control />)
+
+      inst
+        .find('input')
+        .first()
+        .simulate('change', { value: 42 })
+
+      expect(inst.instance()._values.value).toEqual(42)
+    })
+
+    it('should allow for defaultProp', () => {
+      let Control = uncontrollable(Base, {
+        value: 'onChange',
+        open: 'onToggle',
+      })
+
+      let inst = mount(<Control defaultValue={10} defaultOpen />)
+
+      inst.find('.open').first()
+
+      inst
+        .find('input')
+        .first()
+        .tap(inst => expect(inst.getDOMNode().value).toEqual('10'))
+        .simulate('change', { value: 42 })
+
+      expect(inst.instance()._values.value).toEqual(42)
+    })
+
+    it('should not forward default props through', () => {
+      let Control = uncontrollable(Base, {
+        value: 'onChange',
+        open: 'onToggle',
+      })
+
+      let inst = mount(<Control defaultValue={10} defaultOpen />)
+
+      let props = inst.find(Base).props()
+
+      expect(Object.keys(props)).not.toEqual(
+        expect.arrayContaining(['defaultValue', 'defaultOpen'])
+      )
+
+      expect(Object.keys(props)).toEqual(
+        expect.arrayContaining(['value', 'open'])
+      )
+    })
+
+    it('should not throw when not batching', () => {
+      let spy = jest.fn()
+
+      let Control = uncontrollable(Base, {
+        value: 'onChange',
+        open: 'onToggle',
+      })
+
+      let inst = mount(<Control defaultValue={10} defaultOpen onChange={spy} />)
+      let base = inst.find(Base).instance()
+
+      inst.find('.open')
+
+      expect(() => base.handleChange(42)).not.toThrow()
+
+      expect(spy).toHaveBeenCalledTimes(1)
+      expect(inst.instance()._values.value).toEqual(42)
+    })
+
+    it('should update in the right order when controlled', () => {
+      var Control = uncontrollable(Base, { value: 'onChange' }),
+        spy = jest.fn()
+
+      class Parent extends React.Component {
         state = { value: 5 }
-
-        componentWillUnmount () {
-          this._layer.destroy()
-          this._layer = null
-        }
-        componentDidUpdate(){this._renderOverlay()}
-        componentDidMount() {this._renderOverlay()}
-        _renderOverlay() {
-          if (!this._layer)
-            this._layer = new Layer(document.body, () => this._child)
-
-          this.layerInstance = this._layer.render()
-        }
-
         render() {
-          this._child = (
+          return (
             <Control
               onRender={spy}
               value={this.state.value}
-              onChange={value => this.setState({ value, called: true })}
+              onChange={value => this.setState({ value })}
             />
           )
-
-          return <div/>
         }
       }
 
-      let layer = tsp(<Parent/>).render().unwrap();
-      let inst = tsp(layer.layerInstance)
+      mount(<Parent />)
+        .find('input')
+        .first()
+        .simulate('change', { value: 42 })
+
+      expect(spy.mock.calls.length).toEqual(2)
+      expect(spy.mock.calls[0][0].value).toEqual(5)
+      expect(spy.mock.calls[1][0].value).toEqual(42)
+    })
+
+    it('should update in the right order', () => {
+      var Control = uncontrollable(Base, { value: 'onChange' }),
+        spy = jest.fn()
+
+      class Parent extends React.Component {
+        state = { value: 5 }
+        render() {
+          return <Control onRender={spy} defaultValue={this.state.value} />
+        }
+      }
+
+      var inst = mount(<Parent />)
 
       inst
-        .first('input')
-        .trigger('change', { value: 42 })
+        .find('input')
+        .first()
+        .simulate('change', { value: 42 })
 
-      spy.callCount.should.equal(2)
-      spy.firstCall.args[0].value.should.equal(5)
-      spy.secondCall.args[0].value.should.equal(42)
+      expect(spy.mock.calls.length).toEqual(2)
+      expect(spy.mock.calls[0][0].value).toEqual(5)
+      expect(spy.mock.calls[1][0].value).toEqual(42)
 
-      spy.reset();
+      spy.mockReset()
 
-      inst.find(Base).unwrap().nonBatchingChange(84);
+      inst
+        .find(Base)
+        .instance()
+        .handleChange(84)
 
-      spy.callCount.should.equal(1)
-      spy.firstCall.args[0].value.should.equal(84)
+      expect(spy.mock.calls.length).toEqual(1)
+      expect(spy.mock.calls[0][0].value).toEqual(84)
     })
   })
 })

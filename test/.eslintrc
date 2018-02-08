@@ -1,10 +1,7 @@
 {
   "extends": "jason/jest",
-  "globals": {
-    "sinon": true,
-    "expect": true
-  },
+  "parser": "babel-eslint",
   "rules": {
-    "no-console": 0
+    "no-console": "off"
   }
 }
