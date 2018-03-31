@@ -19,43 +19,62 @@
   ],
   "scripts": {
     "test": "jest",
-    "clean": "rimraf lib",
-    "copy": "cpy ./README.md ./lib",
     "tdd": "jest --watch",
     "lint": "eslint src test",
-    "build": "npm run clean && babel src --out-dir lib && npm run copy",
-    "release": "release"
+    "build": "rimraf lib && babel src --out-dir lib && cp package.json lib/",
+    "prepublishOnly": "npm run build",
+    "semantic-release": "semantic-release",
+    "travis-deploy-once": "travis-deploy-once"
   },
   "peerDependencies": {
     "react": ">=15.0.0"
-  },
-  "release-script": {
-    "altPkgRootFolder": "lib"
   },
   "jest": {
     "rootDir": "./test"
   },
   "devDependencies": {
-    "@babel/cli": "^7.0.0-beta.39",
-    "@babel/core": "^7.0.0-beta.39",
+    "@babel/cli": "^7.0.0-beta.42",
+    "@babel/core": "^7.0.0-beta.42",
+    "@semantic-release/changelog": "^2.0.1",
+    "@semantic-release/git": "^4.0.1",
+    "@semantic-release/github": "^4.2.8",
+    "@semantic-release/npm": "^3.2.2",
     "babel-core": "^7.0.0-0",
-    "babel-eslint": "^8.2.1",
-    "babel-jest": "^22.2.0",
-    "babel-preset-jason": "^4.0.0",
-    "cpy": "^3.4.0",
+    "babel-eslint": "^8.2.2",
+    "babel-jest": "^22.4.3",
+    "babel-preset-jason": "^4.1.0",
+    "cpy": "^6.0.0",
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
-    "eslint": "^4.17.0",
+    "eslint": "^4.19.1",
     "eslint-config-jason": "^4.0.0",
-    "eslint-plugin-import": "^2.8.0",
-    "eslint-plugin-react": "^7.6.1",
-    "jest": "^22.2.1",
-    "prop-types": "^15.6.0",
+    "eslint-plugin-import": "^2.10.0",
+    "eslint-plugin-react": "^7.7.0",
+    "jest": "^22.4.3",
+    "prop-types": "^15.6.1",
     "react": "^16.2.0",
+    "react-dom": "^16.3.0",
     "release-script": "^1.0.2",
-    "rimraf": "^2.6.2"
+    "rimraf": "^2.6.2",
+    "semantic-release": "^15.1.4",
+    "semantic-release-alt-publish-dir": "^1.1.0",
+    "travis-deploy-once": "^4.4.1"
   },
   "dependencies": {
-    "invariant": "^2.1.0"
+    "invariant": "^2.2.4"
+  },
+  "release": {
+    "pkgRoot": "lib",
+    "verifyConditions": [
+      "@semantic-release/changelog",
+      "@semantic-release/git",
+      "@semantic-release/github"
+    ],
+    "prepare": [
+      "@semantic-release/changelog",
+      "semantic-release-alt-publish-dir",
+      "@semantic-release/npm",
+      "@semantic-release/git"
+    ]
   }
 }
