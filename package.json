@@ -1,8 +1,7 @@
 {
   "name": "uncontrollable",
   "version": "5.0.0",
-  "description":
-    "Wrap a controlled react component, to allow specific prop/handler pairs to be uncontrolled",
+  "description": "Wrap a controlled react component, to allow specific prop/handler pairs to be uncontrolled",
   "author": {
     "name": "Jason Quense",
     "email": "monastic.panic@gmail.com"
@@ -54,6 +53,7 @@
     "jest": "^22.4.3",
     "prop-types": "^15.6.1",
     "react": "^16.2.0",
+    "react-dom": "^16.3.0",
     "release-script": "^1.0.2",
     "rimraf": "^2.6.2",
     "semantic-release": "^15.1.4",
