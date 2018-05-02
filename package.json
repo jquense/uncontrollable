@@ -64,15 +64,14 @@
     "invariant": "^2.2.4"
   },
   "release": {
-    "pkgRoot": "lib",
     "verifyConditions": [
       "@semantic-release/changelog",
+      "@semantic-release/npm",
       "@semantic-release/git",
       "@semantic-release/github"
     ],
     "prepare": [
       "@semantic-release/changelog",
-      "semantic-release-alt-publish-dir",
       "@semantic-release/npm",
       "@semantic-release/git"
     ]
