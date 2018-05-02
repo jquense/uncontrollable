@@ -22,7 +22,7 @@ import uncontrollable from 'uncontrollable'
 
 * `Component`: is a valid react component, such as the result of `createClass`
 * `propHandlerHash`: define the pairs of prop/handlers you want to be uncontrollable, e.g. `{ value: 'onChange'}`
-* `methods`: since uncontrollable wraps your component in another component, methods are not immediately accessible. You can proxy them through by providing the names of the methods you want to continue to expose.
+* `methods`: since uncontrollable wraps your component in another component, methods are not immediately accessible. You can proxy them through by providing the names of the methods you want to continue to expose. **You don't need this if you are using React >= v16.3.0, the ref will automatically be forwarded to the uinderlying component**
 
 For every prop you indicate as uncontrollable, the returned component will also accept an initial, `default` value for that prop. For example, `open` can be left uncontrolled but the initial value can be set via `defaultOpen={true}` if we want it to start open.
 

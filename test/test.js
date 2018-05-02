@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import Enzyme, { mount } from 'enzyme'
-import Adapter from 'enzyme-adapter-react-16'
+import Adapter from '@monastic.panic/enzyme-adapter-react-16'
 
 import uncontrollable from '../src'
 
@@ -42,7 +42,9 @@ describe('uncontrollable', () => {
             {this.props.open && <span className="open">open!</span>}
             <input
               className="valueInput"
-              ref={r => { this.input = r}}
+              ref={r => {
+                this.input = r
+              }}
               value={value == null ? '' : value}
               onChange={e => this.props.onChange(e.value)}
             />
@@ -82,22 +84,11 @@ describe('uncontrollable', () => {
       expect(Control.propTypes.defaultValue).not.toBeNull()
     })
 
-    it('should forward uncontrollables', () => {
-      var Control = uncontrollable(Base, { value: 'onChange' }, ['foo', 'bar'])
-
-      let instance = mount(<Control value={5} onChange={() => {}} />).instance()
-
-      expect(typeof instance.foo).toBe('function')
-      expect(typeof instance.bar).toBe('function')
-
-      expect(instance.foo(10)).toEqual(20)
-      expect(instance.bar()).toEqual('value: 5')
-    })
 
     it('should adjust displayName', () => {
       var Control = uncontrollable(Base, { value: 'onChange' })
 
-      expect(Control.displayName).toEqual('Uncontrolled(Base)')
+      expect(mount(<Control />).find('Uncontrolled(Base)')).toHaveLength(1)
     })
 
     it('should expose the original component', () => {
@@ -106,36 +97,102 @@ describe('uncontrollable', () => {
       expect(Control.ControlledComponent).toEqual(Base)
     })
 
-    it('should expose the original instance', () => {
-      var Control = uncontrollable(Base, { value: 'onChange' })
+    describe('without forwardRef()', () => {
+      let forwardRef
 
-      expect(
-        mount(<Control defaultValue={10} defaultOpen />)
-          .instance()
-          .getControlledInstance()
-      ).toEqual(expect.anything())
+      beforeEach(() => {
+        forwardRef = React.forwardRef
+        delete React.forwardRef
+      })
+
+      afterEach(() => {
+        React.forwardRef = forwardRef
+      })
+
+      it('should forward methods', () => {
+        var Control = uncontrollable(Base, { value: 'onChange' }, ['foo', 'bar'])
+
+        let wrapper = mount(<Control value={5} onChange={() => {}} />)
+        const instance = wrapper.instance()
+
+
+        expect(instance.constructor.name).toBe('UncontrolledComponent')
+
+        expect(typeof instance.foo).toBe('function')
+        expect(typeof instance.bar).toBe('function')
+
+        expect(instance.foo(10)).toEqual(20)
+        expect(instance.bar()).toEqual('value: 5')
+      })
+
+      it('should pass through uncontrollables', () => {
+        let Control = uncontrollable(Base, { value: 'onChange' }, ['foo'])
+        let instance = mount(
+          <Control defaultValue={10} defaultOpen />
+        ).instance()
+
+        expect(typeof instance.foo).toEqual('function')
+        expect(instance.foo(2)).toEqual(4)
+        expect(instance.inner).toEqual(expect.anything())
+      })
+      it('should work with stateless components', () => {
+        jest.spyOn(console, 'error')
+
+        var Control = uncontrollable(() => <span />, { value: 'onChange' })
+
+        expect(
+          mount(<Control defaultValue={10} defaultOpen />).instance().inner
+        ).not.toEqual(expect.anything())
+
+        expect(console.error).not.toHaveBeenCalled()
+        console.error.mockRestore()
+      })
     })
 
-    it('should work with stateless components', () => {
-      jest.spyOn(console, 'error')
+    it('should passthrough ref', () => {
+      let Control = uncontrollable(Base, { value: 'onChange' })
 
-      var Control = uncontrollable(() => <span />, { value: 'onChange' })
+      class Example extends React.Component {
+        render() {
+          return <Control ref="control" defaultValue={10} defaultOpen />
+        }
+      }
 
-      expect(
-        mount(<Control defaultValue={10} defaultOpen />).instance().inner
-      ).not.toEqual(expect.anything())
-
-      expect(console.error).not.toHaveBeenCalled()
-      console.error.mockRestore()
+      expect(mount(<Example />).instance().refs.control instanceof Base).toEqual(
+        true
+      )
     })
 
-    it('should pass through uncontrollables', () => {
-      var Control = uncontrollable(Base, { value: 'onChange' }, ['foo']),
-        instance = mount(<Control defaultValue={10} defaultOpen />).instance()
 
-      expect(typeof instance.foo).toEqual('function')
-      expect(instance.foo(2)).toEqual(4)
-      expect(instance.inner).toEqual(expect.anything())
+    it('should compose ref with method passthrough', () => {
+      let Control = uncontrollable(Base, { value: 'onChange' }, ['foo'])
+      let ref = null
+
+      class Example extends React.Component {
+        render() {
+          return <Control ref={r => (ref = r)} defaultValue={10} defaultOpen />
+        }
+      }
+
+      mount(<Example />)
+
+      expect(ref instanceof Base).toEqual(true)
+    })
+
+    it('should work with forwardRef components', () => {
+      const OtherBase = React.forwardRef((props, ref) => <Base {...props} ref={ref} />)
+      let Control = uncontrollable(OtherBase, { value: 'onChange' })
+      let ref;
+      class Example extends React.Component {
+        render() {
+          return <Control ref={r => ref =r} defaultValue={10} defaultOpen />
+        }
+      }
+      mount(<Example />)
+
+      expect(ref instanceof Base).toEqual(
+        true
+      )
     })
 
     it('should warn when passing through uncontrollables to stateless components', () => {

@@ -48,7 +48,6 @@ export function defaultKey(key) {
   return 'default' + key.charAt(0).toUpperCase() + key.substr(1)
 }
 
-
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -57,10 +56,10 @@ export function defaultKey(key) {
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
-export function isReactComponent(component) {
-  return !!(
-    component &&
-    component.prototype &&
-    component.prototype.isReactComponent
+export function canAcceptRef(component) {
+  return (
+    !!component &&
+    (typeof component !== 'function' ||
+      (component.prototype && component.prototype.isReactComponent))
   )
 }

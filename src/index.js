@@ -8,12 +8,13 @@ export default function uncontrollable(
   methods = []
 ) {
   let displayName = Component.displayName || Component.name || 'Component'
-  let isCompositeComponent = Utils.isReactComponent(Component)
+  let canAcceptRef = Utils.canAcceptRef(Component)
+
   let controlledProps = Object.keys(controlledValues)
   const PROPS_TO_OMIT = controlledProps.map(Utils.defaultKey)
 
   invariant(
-    isCompositeComponent || !methods.length,
+    canAcceptRef || !methods.length,
     '[uncontrollable] stateless function components cannot pass through methods ' +
       'because they have no associated instances. Check component: ' +
       displayName +
@@ -44,7 +45,7 @@ export default function uncontrollable(
         this.handlers[handlerName] = handleChange
       })
 
-      if (isCompositeComponent)
+      if (methods.length)
         this.attachRef = ref => {
           this.inner = ref
         }
@@ -83,12 +84,8 @@ export default function uncontrollable(
       this.unmounted = true
     }
 
-    getControlledInstance() {
-      return this.inner
-    }
-
     render() {
-      let props = { ...this.props }
+      let { innerRef, ...props } = this.props
 
       PROPS_TO_OMIT.forEach(prop => {
         delete props[prop]
@@ -105,17 +102,17 @@ export default function uncontrollable(
         ...props,
         ...newProps,
         ...this.handlers,
-        ref: this.attachRef,
+        ref: innerRef || this.attachRef,
       })
     }
   }
 
   UncontrolledComponent.displayName = `Uncontrolled(${displayName})`
 
-  UncontrolledComponent.propTypes = Utils.uncontrolledPropTypes(
-    controlledValues,
-    displayName
-  )
+  UncontrolledComponent.propTypes = {
+    innerRef: () => {},
+    ...Utils.uncontrolledPropTypes(controlledValues, displayName),
+  }
 
   methods.forEach(method => {
     UncontrolledComponent.prototype[method] = function $proxiedMethod(...args) {
@@ -123,13 +120,22 @@ export default function uncontrollable(
     }
   })
 
-  UncontrolledComponent.ControlledComponent = Component
+  let WrappedComponent = UncontrolledComponent
+
+  if (React.forwardRef) {
+    WrappedComponent = React.forwardRef((props, ref) => (
+      <UncontrolledComponent {...props} innerRef={ref} />
+    ))
+    WrappedComponent.propTypes = UncontrolledComponent.propTypes
+  }
+
+  WrappedComponent.ControlledComponent = Component
 
   /**
    * useful when wrapping a Component and you want to control
    * everything
    */
-  UncontrolledComponent.deferControlTo = (
+  WrappedComponent.deferControlTo = (
     newComponent,
     additions = {},
     nextMethods
@@ -141,5 +147,5 @@ export default function uncontrollable(
     )
   }
 
-  return UncontrolledComponent
+  return WrappedComponent
 }
