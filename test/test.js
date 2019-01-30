@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import Enzyme, { mount } from 'enzyme'
-import Adapter from '@monastic.panic/enzyme-adapter-react-16'
+import Adapter from 'enzyme-adapter-react-16'
 
 import uncontrollable from '../src'
 
@@ -84,7 +84,6 @@ describe('uncontrollable', () => {
       expect(Control.propTypes.defaultValue).not.toBeNull()
     })
 
-
     it('should adjust displayName', () => {
       var Control = uncontrollable(Base, { value: 'onChange' })
 
@@ -110,11 +109,13 @@ describe('uncontrollable', () => {
       })
 
       it('should forward methods', () => {
-        var Control = uncontrollable(Base, { value: 'onChange' }, ['foo', 'bar'])
+        var Control = uncontrollable(Base, { value: 'onChange' }, [
+          'foo',
+          'bar',
+        ])
 
         let wrapper = mount(<Control value={5} onChange={() => {}} />)
         const instance = wrapper.instance()
-
 
         expect(instance.constructor.name).toBe('UncontrolledComponent')
 
@@ -158,11 +159,10 @@ describe('uncontrollable', () => {
         }
       }
 
-      expect(mount(<Example />).instance().refs.control instanceof Base).toEqual(
-        true
-      )
+      expect(
+        mount(<Example />).instance().refs.control instanceof Base
+      ).toEqual(true)
     })
-
 
     it('should compose ref with method passthrough', () => {
       let Control = uncontrollable(Base, { value: 'onChange' }, ['foo'])
@@ -180,19 +180,19 @@ describe('uncontrollable', () => {
     })
 
     it('should work with forwardRef components', () => {
-      const OtherBase = React.forwardRef((props, ref) => <Base {...props} ref={ref} />)
+      const OtherBase = React.forwardRef((props, ref) => (
+        <Base {...props} ref={ref} />
+      ))
       let Control = uncontrollable(OtherBase, { value: 'onChange' })
-      let ref;
+      let ref
       class Example extends React.Component {
         render() {
-          return <Control ref={r => ref =r} defaultValue={10} defaultOpen />
+          return <Control ref={r => (ref = r)} defaultValue={10} defaultOpen />
         }
       }
       mount(<Example />)
 
-      expect(ref instanceof Base).toEqual(
-        true
-      )
+      expect(ref instanceof Base).toEqual(true)
     })
 
     it('should warn when passing through uncontrollables to stateless components', () => {
@@ -211,7 +211,7 @@ describe('uncontrollable', () => {
         .first()
         .simulate('change', { value: 42 })
 
-      expect(inst.instance()._values.value).toEqual(42)
+      expect(inst.children().instance()._values.value).toEqual(42)
     })
 
     it('should allow for defaultProp', () => {
@@ -230,7 +230,7 @@ describe('uncontrollable', () => {
         .tap(inst => expect(inst.getDOMNode().value).toEqual('10'))
         .simulate('change', { value: 42 })
 
-      expect(inst.instance()._values.value).toEqual(42)
+      expect(inst.children().instance()._values.value).toEqual(42)
     })
 
     it('should not forward default props through', () => {
@@ -268,7 +268,7 @@ describe('uncontrollable', () => {
       expect(() => base.handleChange(42)).not.toThrow()
 
       expect(spy).toHaveBeenCalledTimes(1)
-      expect(inst.instance()._values.value).toEqual(42)
+      expect(inst.children().instance()._values.value).toEqual(42)
     })
 
     it('should update in the right order when controlled', () => {
