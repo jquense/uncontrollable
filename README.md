@@ -20,9 +20,9 @@ import uncontrollable from 'uncontrollable'
 
 #### `uncontrollable(Component, propHandlerHash, [methods])`
 
-* `Component`: is a valid react component, such as the result of `createClass`
-* `propHandlerHash`: define the pairs of prop/handlers you want to be uncontrollable, e.g. `{ value: 'onChange'}`
-* `methods`: since uncontrollable wraps your component in another component, methods are not immediately accessible. You can proxy them through by providing the names of the methods you want to continue to expose. **You don't need this if you are using React >= v16.3.0, the ref will automatically be forwarded to the uinderlying component**
+- `Component`: is a valid react component, such as the result of `createClass`
+- `propHandlerHash`: define the pairs of prop/handlers you want to be uncontrollable, e.g. `{ value: 'onChange'}`
+- `methods`: since uncontrollable wraps your component in another component, methods are not immediately accessible. You can proxy them through by providing the names of the methods you want to continue to expose. **You don't need this if you are using React >= v16.3.0, the ref will automatically be forwarded to the uinderlying component**
 
 For every prop you indicate as uncontrollable, the returned component will also accept an initial, `default` value for that prop. For example, `open` can be left uncontrolled but the initial value can be set via `defaultOpen={true}` if we want it to start open.
 
@@ -46,6 +46,26 @@ let UncontrolledForm = uncontrollable(Form, { value: 'onChange' }, ['submit'])
 
 //when you use a ref this will work
 this.refs.myForm.submit()
+```
+
+#### `useUncontrolled(props, propsHandlerHash) => controlledProps`
+
+A React hook that can be used in place of the above Higher order Component. It
+returns a complete set of `props` which are safe to spread through to a child element.
+
+```js
+import useUncontrolled from 'uncontrollable/hook'
+
+const UncontrolledCombobox = props => {
+  // filters out defaultValue, defaultOpen and returns controlled
+  // versions of onChange, and onToggle.
+  const controlledProps = useUncontrolled(props, {
+    value: 'onChange',
+    open: 'onToggle',
+  })
+
+  return <Checkbox {...controlledProps} />
+}
 ```
 
 ### Use Case

@@ -33,6 +33,7 @@
     "rootDir": "./test"
   },
   "devDependencies": {
+    "@4c/semantic-release-config": "^1.0.3",
     "@babel/cli": "^7.2.3",
     "@babel/core": "^7.2.2",
     "@semantic-release/changelog": "^3.0.2",
@@ -64,16 +65,9 @@
     "invariant": "^2.2.4"
   },
   "release": {
-    "verifyConditions": [
-      "@semantic-release/changelog",
-      "@semantic-release/npm",
-      "@semantic-release/git",
-      "@semantic-release/github"
-    ],
-    "prepare": [
-      "@semantic-release/changelog",
-      "@semantic-release/npm",
-      "@semantic-release/git"
+    "pkgRoot": "lib",
+    "extends": [
+      "@4c/semantic-release-config"
     ]
   }
 }

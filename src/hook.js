@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useCallback, useState, useRef } from 'react'
 import * as Utils from './utils'
 
 export default function useUncontrolled(props, config) {
@@ -22,15 +22,17 @@ export default function useUncontrolled(props, config) {
      * reset its value to the defaultValue
      */
     if (!isProp && wasProp) {
-      return setState(defaultValue)
+      setState(defaultValue)
     }
+    const propsHandler = props[handlerName]
 
-    const handler = (value, ...args) => {
-      if (props[handlerName]) {
-        props[handlerName](value, ...args)
-      }
-      setState(value)
-    }
+    const handler = useCallback(
+      (value, ...args) => {
+        if (propsHandler) propsHandler(value, ...args)
+        setState(value)
+      },
+      [setState, propsHandler]
+    )
 
     return {
       ...rest,

@@ -390,5 +390,31 @@ describe('uncontrollable', () => {
 
       expect(ref.current.value).toEqual(42)
     })
+
+    it('should revert to defaultProp when switched to uncontrolled', () => {
+      let ref = {}
+      let Control = props => {
+        props = useUncontrolled(props, { value: 'onChange' })
+        ref.current = props
+
+        return (
+          <input
+            {...props}
+            value={props.value == null ? '' : props.value}
+            onChange={e => props.onChange(e.value)}
+          />
+        )
+      }
+
+      let inst = mount(
+        <Control defaultValue="foo" value="bar" onChange={() => {}} />
+      )
+
+      expect(ref.current.value).toEqual('bar')
+
+      inst.setProps({ value: undefined })
+
+      expect(ref.current.value).toEqual('foo')
+    })
   })
 })
