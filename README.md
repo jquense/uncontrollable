@@ -13,7 +13,7 @@ npm i -S uncontrollable
 If you are a bit unsure on the _why_ of this module read the next section first. If you just want to see some real-world examples, check out [React Widgets](https://github.com/jquense/react-widgets) which makes [heavy use of this strategy](https://github.com/jquense/react-widgets/blob/5d1b530cb094cdc72f577fe01abe4a02dd265400/src/Multiselect.jsx#L521).
 
 ```js
-import uncontrollable from 'uncontrollable'
+import { uncontrollable } from 'uncontrollable'
 ```
 
 ### API
@@ -27,7 +27,7 @@ import uncontrollable from 'uncontrollable'
 For every prop you indicate as uncontrollable, the returned component will also accept an initial, `default` value for that prop. For example, `open` can be left uncontrolled but the initial value can be set via `defaultOpen={true}` if we want it to start open.
 
 ```js
-const uncontrollable = require('uncontrollable')
+import { uncontrollable } from 'uncontrollable'
 
 const UncontrolledCombobox = uncontrollable(Combobox, {
   value: 'onChange',
@@ -54,7 +54,7 @@ A React hook that can be used in place of the above Higher order Component. It
 returns a complete set of `props` which are safe to spread through to a child element.
 
 ```js
-import useUncontrolled from 'uncontrollable/hook'
+import { useUncontrolled } from 'uncontrollable'
 
 const UncontrolledCombobox = props => {
   // filters out defaultValue, defaultOpen and returns controlled
@@ -127,7 +127,7 @@ We want to just handle the open/onToggle case ourselves if the consumer doesn't 
 `uncontrollable` allows you separate out the logic necessary to create controlled/uncontrolled inputs letting you focus on creating a completely controlled input and wrapping it later. This tends to be a lot simpler to reason about as well.
 
 ```js
-  const uncontrollable =  require('uncontrollable');
+  import { uncontrollable } from 'uncontrollable';
 
   const UncontrollableDropdown = uncontrollable(SimpleDropdown, {
     value: 'onChange',

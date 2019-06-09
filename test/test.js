@@ -4,8 +4,7 @@ import React from 'react'
 import Enzyme, { mount } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 
-import uncontrollable from '../src'
-import useUncontrolled from '../src/hook'
+import { uncontrollable, useUncontrolled } from '../src'
 
 Enzyme.configure({ adapter: new Adapter() })
 
