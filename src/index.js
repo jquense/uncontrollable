@@ -2,7 +2,9 @@ import React from 'react'
 import invariant from 'invariant'
 import * as Utils from './utils'
 
-export default function uncontrollable(
+export { default as useUncontrolled } from './hook.js';
+
+export function uncontrollable(
   Component,
   controlledValues,
   methods = []
