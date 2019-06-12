@@ -27,7 +27,7 @@ import { uncontrollable } from 'uncontrollable'
 For every prop you indicate as uncontrollable, the returned component will also accept an initial, `default` value for that prop. For example, `open` can be left uncontrolled but the initial value can be set via `defaultOpen={true}` if we want it to start open.
 
 ```js
-import { uncontrollable } from 'uncontrollable)
+import { uncontrollable } from 'uncontrollable'
 
 const UncontrolledCombobox = uncontrollable(Combobox, {
   value: 'onChange',
