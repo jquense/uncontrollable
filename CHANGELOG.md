@@ -1,3 +1,14 @@
+## [6.2.3](https://github.com/jquense/uncontrollable/compare/v6.2.2...v6.2.3) (2019-06-17)
+
+
+### Bug Fixes
+
+* republish again to fix build lol ([38f3bf8](https://github.com/jquense/uncontrollable/commit/38f3bf8))
+
+
+
+
+
 ## [6.2.2](https://github.com/jquense/uncontrollable/compare/v6.2.1...v6.2.2) (2019-06-17)
 
 
