@@ -23,7 +23,7 @@
     "tdd": "jest --watch",
     "lint": "eslint src test",
     "build:cjs": "NODE_ENV=production babel src --out-dir lib/",
-    "build:esm": "NODE_ENV=production BABEL_ENV=esm babel src --out-dir lib/esm",
+    "build:esm": "NODE_ENV=production BABEL_ENV=esm babel src --out-dir lib/esm && mv lib/esm/index-esm.js lib/esm/index.js",
     "build": "rimraf lib && yarn build:cjs && yarn build:esm && cp package.json lib/",
     "prepublishOnly": "npm run build",
     "semantic-release": "semantic-release",
