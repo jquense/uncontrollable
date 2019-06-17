@@ -1,3 +1,12 @@
+# [6.1.0](https://github.com/jquense/uncontrollable/compare/v6.0.0...v6.1.0) (2019-02-12)
+
+
+### Features
+
+* add hook ([35c194d](https://github.com/jquense/uncontrollable/commit/35c194d))
+
+
+
 <a name="6.0.0"></a>
 # [6.0.0](https://github.com/jquense/uncontrollable/compare/v5.1.0...v6.0.0) (2018-05-02)
 
