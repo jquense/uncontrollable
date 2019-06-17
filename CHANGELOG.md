@@ -1,3 +1,14 @@
+## [6.2.2](https://github.com/jquense/uncontrollable/compare/v6.2.1...v6.2.2) (2019-06-17)
+
+
+### Bug Fixes
+
+* make default import ([e7ff375](https://github.com/jquense/uncontrollable/commit/e7ff375))
+
+
+
+
+
 ## [6.2.1](https://github.com/jquense/uncontrollable/compare/v6.2.0...v6.2.1) (2019-06-17)
 
 
