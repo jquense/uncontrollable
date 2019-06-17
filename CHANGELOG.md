@@ -1,3 +1,10 @@
+# [6.2.0](https://github.com/jquense/uncontrollable/compare/v6.1.0...v6.2.0) (2019-06-17)
+
+
+### Features
+
+* add esm support ([2457bf3](https://github.com/jquense/uncontrollable/commit/2457bf3))
+
 # [6.1.0](https://github.com/jquense/uncontrollable/compare/v6.0.0...v6.1.0) (2019-02-12)
 
 
