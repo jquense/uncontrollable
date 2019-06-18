@@ -1,3 +1,20 @@
+# [7.0.0](https://github.com/jquense/uncontrollable/compare/v6.2.3...v7.0.0) (2019-06-18)
+
+
+### Features
+
+* consistent exports ([#37](https://github.com/jquense/uncontrollable/issues/37)) ([6b51ec6](https://github.com/jquense/uncontrollable/commit/6b51ec6))
+
+
+### BREAKING CHANGES
+
+* no more default export
+
+- removed default export
+- name files properly
+
+* Use default exports
+
 ## [6.2.3](https://github.com/jquense/uncontrollable/compare/v6.2.2...v6.2.3) (2019-06-17)
 
 
