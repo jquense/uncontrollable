@@ -8,7 +8,7 @@
   },
   "repository": "jquense/uncontrollable",
   "license": "MIT",
-  "main": "lib/index.js",
+  "main": "lib/cjs/index.js",
   "module": "lib/esm/index.js",
   "keywords": [
     "uncontrolled-component",
@@ -22,9 +22,9 @@
     "test": "jest",
     "tdd": "jest --watch",
     "lint": "eslint src test",
-    "build:cjs": "NODE_ENV=production babel src --out-dir lib/",
-    "build:esm": "NODE_ENV=production BABEL_ENV=esm babel src --out-dir lib/esm && mv lib/esm/index-esm.js lib/esm/index.js",
-    "build": "rimraf lib && yarn build:cjs && yarn build:esm && cp package.json lib/",
+    "build:cjs": "NODE_ENV=production babel src --out-dir lib/cjs",
+    "build:esm": "NODE_ENV=production BABEL_ENV=esm babel src --out-dir lib/esm",
+    "build": "rimraf lib && yarn build:cjs && yarn build:esm",
     "prepublishOnly": "npm run build",
     "semantic-release": "semantic-release",
     "travis-deploy-once": "travis-deploy-once"

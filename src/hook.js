@@ -1,7 +1,7 @@
 import { useCallback, useState, useRef } from 'react'
 import * as Utils from './utils'
 
-export default function useUncontrolled(props, config) {
+export function useUncontrolled(props, config) {
   return Object.keys(config).reduce((result, fieldName) => {
     const {
       [Utils.defaultKey(fieldName)]: defaultValue,
