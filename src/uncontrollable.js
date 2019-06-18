@@ -2,9 +2,7 @@ import React from 'react'
 import invariant from 'invariant'
 import * as Utils from './utils'
 
-export { default as useUncontrolled } from './hook.js'
-
-export function uncontrollable(Component, controlledValues, methods = []) {
+export default function uncontrollable(Component, controlledValues, methods = []) {
   let displayName = Component.displayName || Component.name || 'Component'
   let canAcceptRef = Utils.canAcceptRef(Component)
 
@@ -147,5 +145,3 @@ export function uncontrollable(Component, controlledValues, methods = []) {
 
   return WrappedComponent
 }
-
-export default uncontrollable
