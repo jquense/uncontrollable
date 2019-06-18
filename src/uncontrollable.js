@@ -2,7 +2,7 @@ import React from 'react'
 import invariant from 'invariant'
 import * as Utils from './utils'
 
-export function uncontrollable(Component, controlledValues, methods = []) {
+export default function uncontrollable(Component, controlledValues, methods = []) {
   let displayName = Component.displayName || Component.name || 'Component'
   let canAcceptRef = Utils.canAcceptRef(Component)
 
