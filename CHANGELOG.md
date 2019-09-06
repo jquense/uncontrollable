@@ -1,3 +1,10 @@
+## [7.0.1](https://github.com/jquense/uncontrollable/compare/v7.0.0...v7.0.1) (2019-09-06)
+
+
+### Bug Fixes
+
+* rename License.txt to LICENSE ([#39](https://github.com/jquense/uncontrollable/issues/39)) ([171e821](https://github.com/jquense/uncontrollable/commit/171e821))
+
 # [7.0.0](https://github.com/jquense/uncontrollable/compare/v6.2.3...v7.0.0) (2019-06-18)
 
 
