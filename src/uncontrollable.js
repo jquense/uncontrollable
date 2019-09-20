@@ -45,6 +45,13 @@ export default function uncontrollable(Component, controlledValues, methods = []
         this.attachRef = ref => {
           this.inner = ref
         }
+
+      this._values = Object.create(null)
+
+      let props = this.props
+      controlledProps.forEach(key => {
+        this._values[key] = props[Utils.defaultKey(key)]
+      })
     }
 
     shouldComponentUpdate() {
@@ -52,17 +59,7 @@ export default function uncontrollable(Component, controlledValues, methods = []
       return !this._notifying
     }
 
-    componentWillMount() {
-      let props = this.props
-
-      this._values = Object.create(null)
-
-      controlledProps.forEach(key => {
-        this._values[key] = props[Utils.defaultKey(key)]
-      })
-    }
-
-    componentWillReceiveProps(nextProps) {
+    componentDidUpdate(prevProps) {
       let props = this.props
 
       controlledProps.forEach(key => {
@@ -70,8 +67,8 @@ export default function uncontrollable(Component, controlledValues, methods = []
          * If a prop switches from controlled to Uncontrolled
          * reset its value to the defaultValue
          */
-        if (!Utils.isProp(nextProps, key) && Utils.isProp(props, key)) {
-          this._values[key] = nextProps[Utils.defaultKey(key)]
+        if (!Utils.isProp(props, key) && Utils.isProp(prevProps, key)) {
+          this._values[key] = props[Utils.defaultKey(key)]
         }
       })
     }
