@@ -327,6 +327,45 @@ describe('uncontrollable', () => {
     expect(spy.mock.calls[0][0].value).toEqual(84)
   })
 
+  it('should revert to defaultProp when switched to uncontrollable', () => {
+    var Control = uncontrollable(Base, { value: 'onChange' }),
+            spy = jest.fn()
+
+    class Parent extends React.Component {
+      state = { value: 5, defaultValue: 6 }
+      render() {
+        return (
+                <Control
+                        onRender={spy}
+                        value={this.state.value}
+                        defaultValue={this.state.defaultValue}
+                        onChange={value => this.setState({ value })}
+                />
+        )
+      }
+    }
+
+    var inst = mount(<Parent />);
+
+    expect(spy.mock.calls.length).toEqual(1)
+    expect(spy.mock.calls[0][0].value).toEqual(5)
+
+    inst.setState({ value: undefined })
+
+    expect(spy.mock.calls.length).toEqual(2)
+    expect(spy.mock.calls[1][0].value).toEqual(6)
+
+    inst.setState({ value: 63 })
+
+    expect(spy.mock.calls.length).toEqual(3)
+    expect(spy.mock.calls[2][0].value).toEqual(63)
+
+    inst.setState({ value: undefined, defaultValue: 52 })
+
+    expect(spy.mock.calls.length).toEqual(4)
+    expect(spy.mock.calls[3][0].value).toEqual(52)
+  })
+
   describe('hook', () => {
     it('should track internally if not specified', () => {
       let ref = {}
@@ -414,6 +453,14 @@ describe('uncontrollable', () => {
       inst.setProps({ value: undefined })
 
       expect(ref.current.value).toEqual('foo')
+
+      inst.setProps({ value: 'bar' })
+
+      expect(ref.current.value).toEqual('bar')
+
+      inst.setProps({ value: undefined, defaultValue: 'baz' })
+
+      expect(ref.current.value).toEqual('baz')
     })
   })
 })
