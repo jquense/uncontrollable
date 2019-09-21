@@ -59,7 +59,8 @@ export default function uncontrollable(Component, controlledValues, methods = []
       return !this._notifying
     }
 
-    componentDidUpdate(prevProps) {
+    
+    UNSAFE_componentWillReceiveProps(nextProps) {
       let props = this.props
 
       controlledProps.forEach(key => {
@@ -67,8 +68,8 @@ export default function uncontrollable(Component, controlledValues, methods = []
          * If a prop switches from controlled to Uncontrolled
          * reset its value to the defaultValue
          */
-        if (!Utils.isProp(props, key) && Utils.isProp(prevProps, key)) {
-          this._values[key] = props[Utils.defaultKey(key)]
+        if (!Utils.isProp(nextProps, key) && Utils.isProp(props, key)) {
+          this._values[key] = nextProps[Utils.defaultKey(key)]
         }
       })
     }
