@@ -207,7 +207,7 @@ describe('uncontrollable', () => {
       .first()
       .simulate('change', { value: 42 })
 
-    expect(inst.children().instance()._values.value).toEqual(42)
+    expect(inst.children().instance().state.values.value).toEqual(42)
   })
 
   it('should allow for defaultProp', () => {
@@ -226,7 +226,7 @@ describe('uncontrollable', () => {
       .tap(inst => expect(inst.getDOMNode().value).toEqual('10'))
       .simulate('change', { value: 42 })
 
-    expect(inst.children().instance()._values.value).toEqual(42)
+    expect(inst.children().instance().state.values.value).toEqual(42)
   })
 
   it('should not forward default props through', () => {
@@ -264,7 +264,7 @@ describe('uncontrollable', () => {
     expect(() => base.handleChange(42)).not.toThrow()
 
     expect(spy).toHaveBeenCalledTimes(1)
-    expect(inst.children().instance()._values.value).toEqual(42)
+    expect(inst.children().instance().state.values.value).toEqual(42)
   })
 
   it('should update in the right order when controlled', () => {
