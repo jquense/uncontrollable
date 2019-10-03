@@ -1,4 +1,5 @@
 import React from 'react'
+import { polyfill } from 'react-lifecycles-compat'
 import invariant from 'invariant'
 import * as Utils from './utils'
 
@@ -35,8 +36,10 @@ export default function uncontrollable(Component, controlledValues, methods = []
             this._notifying = false
           }
 
-          this._values[propName] = value
-          if (!this.unmounted) this.forceUpdate()
+          if (!this.unmounted)
+            this.setState(({ values }) => ({
+              values: Object.assign(Object.create(null), values, { [propName]: value })
+            }))
         }
         this.handlers[handlerName] = handleChange
       })
@@ -45,35 +48,35 @@ export default function uncontrollable(Component, controlledValues, methods = []
         this.attachRef = ref => {
           this.inner = ref
         }
+
+      const values = Object.create(null)
+      controlledProps.forEach(key => {
+        values[key] = this.props[Utils.defaultKey(key)]
+      })
+      this.state = { values, prevProps: {} };
     }
 
     shouldComponentUpdate() {
-      //let the forceUpdate trigger the update
+      //let setState trigger the update
       return !this._notifying
     }
 
-    componentWillMount() {
-      let props = this.props
-
-      this._values = Object.create(null)
-
-      controlledProps.forEach(key => {
-        this._values[key] = props[Utils.defaultKey(key)]
-      })
-    }
-
-    componentWillReceiveProps(nextProps) {
-      let props = this.props
-
+    static getDerivedStateFromProps(props, { values, prevProps }) {
+      const nextState = {
+        values: Object.assign(Object.create(null), values),
+        prevProps: {},
+      }
       controlledProps.forEach(key => {
         /**
          * If a prop switches from controlled to Uncontrolled
          * reset its value to the defaultValue
          */
-        if (!Utils.isProp(nextProps, key) && Utils.isProp(props, key)) {
-          this._values[key] = nextProps[Utils.defaultKey(key)]
+        nextState.prevProps[key] = props[key]
+        if (!Utils.isProp(props, key) && Utils.isProp(prevProps, key)) {
+          nextState.values[key] = props[Utils.defaultKey(key)]
         }
       })
+      return nextState
     }
 
     componentWillUnmount() {
@@ -91,7 +94,7 @@ export default function uncontrollable(Component, controlledValues, methods = []
       controlledProps.forEach(propName => {
         let propValue = this.props[propName]
         newProps[propName] =
-          propValue !== undefined ? propValue : this._values[propName]
+          propValue !== undefined ? propValue : this.state.values[propName]
       })
 
       return React.createElement(Component, {
@@ -102,6 +105,8 @@ export default function uncontrollable(Component, controlledValues, methods = []
       })
     }
   }
+
+  polyfill(UncontrolledComponent)
 
   UncontrolledComponent.displayName = `Uncontrolled(${displayName})`
 
