@@ -1,4 +1,5 @@
 import React from 'react'
+import { polyfill } from 'react-lifecycles-compat'
 import invariant from 'invariant'
 import * as Utils from './utils'
 
@@ -104,6 +105,8 @@ export default function uncontrollable(Component, controlledValues, methods = []
       })
     }
   }
+
+  polyfill(UncontrolledComponent)
 
   UncontrolledComponent.displayName = `Uncontrolled(${displayName})`
 
