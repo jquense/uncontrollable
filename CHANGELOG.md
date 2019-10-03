@@ -1,3 +1,10 @@
+## [7.0.2](https://github.com/jquense/uncontrollable/compare/v7.0.1...v7.0.2) (2019-10-03)
+
+
+### Bug Fixes
+
+*  migrate unsafe lifecycle ([#40](https://github.com/jquense/uncontrollable/issues/40)) ([1607fff](https://github.com/jquense/uncontrollable/commit/1607fff))
+
 ## [7.0.1](https://github.com/jquense/uncontrollable/compare/v7.0.0...v7.0.1) (2019-09-06)
 
 
