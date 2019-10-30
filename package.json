@@ -23,9 +23,10 @@
     "tdd": "jest --watch",
     "lint": "eslint src test",
     "build": "build src",
-    "prepublishOnly": "npm run build",
-    "semantic-release": "semantic-release",
-    "travis-deploy-once": "travis-deploy-once"
+    "prepublishOnly": "npm run build"
+  },
+  "publishConfig": {
+    "directory": "lib"
   },
   "peerDependencies": {
     "react": ">=15.0.0"
@@ -40,10 +41,6 @@
     "@babel/cli": "^7.6.4",
     "@babel/core": "^7.6.4",
     "@babel/preset-typescript": "^7.6.0",
-    "@semantic-release/changelog": "^3.0.5",
-    "@semantic-release/git": "^7.0.17",
-    "@semantic-release/github": "^5.5.5",
-    "@semantic-release/npm": "^5.3.2",
     "@typescript-eslint/eslint-plugin": "^2.5.0",
     "@typescript-eslint/parser": "^2.5.0",
     "babel-core": "^7.0.0-0",
@@ -64,9 +61,6 @@
     "react-dom": "^16.11.0",
     "release-script": "^1.0.2",
     "rimraf": "^3.0.0",
-    "semantic-release": "^15.13.28",
-    "semantic-release-alt-publish-dir": "^3.0.0",
-    "travis-deploy-once": "^5.0.11",
     "typescript": "^3.6.4"
   },
   "dependencies": {
@@ -74,11 +68,5 @@
     "@types/react": "^16.9.11",
     "invariant": "^2.2.4",
     "react-lifecycles-compat": "^3.0.4"
-  },
-  "release": {
-    "pkgRoot": "lib",
-    "extends": [
-      "@4c/semantic-release-config"
-    ]
   }
 }

@@ -3,11 +3,7 @@ cache: yarn
 notifications:
   email: false
 node_js:
-  - 'stable'
-
-after_success:
-  - npm run build
-  - npm run semantic-release
+  - "stable"
 branches:
   only:
     - master
