@@ -1,4 +1,8 @@
 {
-  "parser": "babel-eslint",
-  "extends": "jason/react"
+  "extends": ["jason/react", "eslint-config-4catalyzer-typescript", "prettier"],
+  "rules": {
+    "prefer-const": "off",
+    "@typescript-eslint/member-delimiter-style": "off",
+    "@typescript-eslint/no-use-before-define": "off"
+  }
 }

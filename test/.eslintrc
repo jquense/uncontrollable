@@ -1,6 +1,4 @@
 {
-  "extends": "jason/jest",
-  "parser": "babel-eslint",
   "rules": {
     "no-console": "off"
   }

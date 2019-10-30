@@ -1,8 +1,8 @@
 {
-  "presets": ["jason"],
+  "presets": ["jason", "@babel/preset-typescript"],
   "env": {
     "esm": {
-      "presets": [["jason", { "modules": false }]],
+      "presets": [["jason", { "modules": false }]]
     }
   }
 }

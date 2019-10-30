@@ -2,8 +2,8 @@ import invariant from 'invariant'
 
 const noop = () => {}
 
-function readOnlyPropType(handler, name) {
-  return function(props, propName) {
+function readOnlyPropType(handler: string, name: string) {
+  return function(props: any, propName: string) {
     if (props[propName] !== undefined) {
       if (!props[handler]) {
         return new Error(
@@ -17,7 +17,10 @@ function readOnlyPropType(handler, name) {
   }
 }
 
-export function uncontrolledPropTypes(controlledValues, displayName) {
+export function uncontrolledPropTypes(
+  controlledValues: any,
+  displayName: string
+) {
   let propTypes = {}
 
   Object.keys(controlledValues).forEach(prop => {
@@ -40,11 +43,11 @@ export function uncontrolledPropTypes(controlledValues, displayName) {
   return propTypes
 }
 
-export function isProp(props, prop) {
+export function isProp<P>(props: P, prop: keyof P) {
   return props[prop] !== undefined
 }
 
-export function defaultKey(key) {
+export function defaultKey(key: string) {
   return 'default' + key.charAt(0).toUpperCase() + key.substr(1)
 }
 
@@ -56,7 +59,7 @@ export function defaultKey(key) {
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
-export function canAcceptRef(component) {
+export function canAcceptRef(component: any) {
   return (
     !!component &&
     (typeof component !== 'function' ||

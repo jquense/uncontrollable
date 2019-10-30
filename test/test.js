@@ -1,9 +1,9 @@
+import Enzyme, { mount } from 'enzyme'
+import Adapter from 'enzyme-adapter-react-16'
+/* eslint-env jest */
 /* eslint-disable react/prop-types */
 import PropTypes from 'prop-types'
 import React from 'react'
-import Enzyme, { mount } from 'enzyme'
-import Adapter from 'enzyme-adapter-react-16'
-
 import { uncontrollable, useUncontrolled } from '../src'
 
 Enzyme.configure({ adapter: new Adapter() })
@@ -329,23 +329,23 @@ describe('uncontrollable', () => {
 
   it('should revert to defaultProp when switched to uncontrollable', () => {
     var Control = uncontrollable(Base, { value: 'onChange' }),
-            spy = jest.fn()
+      spy = jest.fn()
 
     class Parent extends React.Component {
       state = { value: 5, defaultValue: 6 }
       render() {
         return (
-                <Control
-                        onRender={spy}
-                        value={this.state.value}
-                        defaultValue={this.state.defaultValue}
-                        onChange={value => this.setState({ value })}
-                />
+          <Control
+            onRender={spy}
+            value={this.state.value}
+            defaultValue={this.state.defaultValue}
+            onChange={value => this.setState({ value })}
+          />
         )
       }
     }
 
-    var inst = mount(<Parent />);
+    var inst = mount(<Parent />)
 
     expect(spy.mock.calls.length).toEqual(1)
     expect(spy.mock.calls[0][0].value).toEqual(5)
