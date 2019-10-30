@@ -1,3 +1,14 @@
+# [7.1.0](https://github.com/jquense/uncontrollable/compare/v7.0.2...v7.1.0) (2019-10-30)
+
+
+### Features
+
+* add useUncontrolledProp and types ([6e0837d](https://github.com/jquense/uncontrollable/commit/6e0837d))
+
+
+
+
+
 ## [7.0.2](https://github.com/jquense/uncontrollable/compare/v7.0.1...v7.0.2) (2019-10-03)
 
 
