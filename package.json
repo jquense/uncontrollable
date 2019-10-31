@@ -1,6 +1,6 @@
 {
   "name": "uncontrollable",
-  "version": "7.1.0",
+  "version": "7.1.1",
   "description": "Wrap a controlled react component, to allow specific prop/handler pairs to be uncontrolled",
   "author": {
     "name": "Jason Quense",
@@ -77,5 +77,5 @@
   },
   "readme": "ERROR: No README data found!",
   "homepage": "https://github.com/jquense/uncontrollable#readme",
-  "_id": "uncontrollable@7.0.2"
+  "_id": "uncontrollable@7.1.0"
 }

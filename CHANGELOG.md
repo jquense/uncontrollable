@@ -1,3 +1,16 @@
+## [7.1.1](https://github.com/jquense/uncontrollable/compare/v7.1.0...v7.1.1) (2019-10-31)
+
+
+### Bug Fixes
+
+* bump fstream from 1.0.11 to 1.0.12 ([#45](https://github.com/jquense/uncontrollable/issues/45)) ([97b1287](https://github.com/jquense/uncontrollable/commit/97b1287))
+* bump sshpk from 1.11.0 to 1.16.1 ([#46](https://github.com/jquense/uncontrollable/issues/46)) ([80e19d5](https://github.com/jquense/uncontrollable/commit/80e19d5))
+* clean up types ([bd29932](https://github.com/jquense/uncontrollable/commit/bd29932))
+
+
+
+
+
 # [7.1.0](https://github.com/jquense/uncontrollable/compare/v7.0.2...v7.1.0) (2019-10-30)
 
 
