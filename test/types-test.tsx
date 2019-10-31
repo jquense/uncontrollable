@@ -2,7 +2,7 @@ import { useUncontrolled, useUncontrolledProp } from '../src'
 
 interface Props {
   value?: string
-  defaultValue?: string
+  defaultValue: string | undefined
   onChange?(value: string, meta: {}): void
 }
 

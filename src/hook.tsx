@@ -1,12 +1,19 @@
 import { useCallback, useRef, useState } from 'react'
 import * as Utils from './utils'
 
-type Handler<TProp> = (nextValue: TProp, ...args: any[]) => any
+export type Handler = (...args: any[]) => any
 
-export function useUncontrolledProp<
-  TProp,
-  THandler extends Handler<TProp> = Handler<TProp>
->(
+function useUncontrolledProp<TProp, THandler extends Handler = Handler>(
+  propValue: TProp | undefined,
+  defaultValue: TProp,
+  handler?: THandler
+): readonly [TProp, THandler]
+function useUncontrolledProp<TProp, THandler extends Handler = Handler>(
+  propValue: TProp | undefined,
+  defaultValue?: TProp | undefined,
+  handler?: THandler
+): readonly [TProp | undefined, THandler]
+function useUncontrolledProp<TProp, THandler extends Handler = Handler>(
   propValue: TProp | undefined,
   defaultValue: TProp | undefined,
   handler?: THandler
@@ -38,6 +45,8 @@ export function useUncontrolledProp<
     ) as THandler,
   ] as const
 }
+
+export { useUncontrolledProp }
 
 type FilterFlags<Base, Condition> = {
   [Key in keyof Base]: NonNullable<Base[Key]> extends Condition ? Key : never
