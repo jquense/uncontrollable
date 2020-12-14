@@ -77,5 +77,8 @@
   },
   "readme": "ERROR: No README data found!",
   "homepage": "https://github.com/jquense/uncontrollable#readme",
-  "_id": "uncontrollable@7.1.0"
+  "_id": "uncontrollable@7.1.0",
+  "typesVersions": {
+    ">=4.1": { "*": ["./types.d.ts"] }
+  }
 }
