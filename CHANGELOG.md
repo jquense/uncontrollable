@@ -1,3 +1,14 @@
+# [7.2.0](https://github.com/jquense/uncontrollable/compare/v7.1.1...v7.2.0) (2021-01-25)
+
+
+### Features
+
+* Allow React 17 types ([#50](https://github.com/jquense/uncontrollable/issues/50)) ([d1f5274](https://github.com/jquense/uncontrollable/commit/d1f527437b93af5baf4c1c038ee1d0afd4ce0d73))
+
+
+
+
+
 ## [7.1.1](https://github.com/jquense/uncontrollable/compare/v7.1.0...v7.1.1) (2019-10-31)
 
 
