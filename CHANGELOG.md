@@ -1,3 +1,24 @@
+# [8.0.0](https://github.com/jquense/uncontrollable/compare/v7.2.0...v8.0.0) (2023-03-08)
+
+
+### Bug Fixes
+
+* maintain ie 11 support ([4349b48](https://github.com/jquense/uncontrollable/commit/4349b48b87bf27c46e1b2d8876f075269707aacb))
+
+
+### chore
+
+* bump deps and remove HOC ([8924a68](https://github.com/jquense/uncontrollable/commit/8924a68880487e08cf3073d883cca6032be2e778))
+
+
+### BREAKING CHANGES
+
+* higher order component removed for just hooks, browser support bumped up to esm compatible
+
+
+
+
+
 # [7.2.0](https://github.com/jquense/uncontrollable/compare/v7.1.1...v7.2.0) (2021-01-25)
 
 
