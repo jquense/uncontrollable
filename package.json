@@ -26,10 +26,8 @@
     "tdd": "jest --watch",
     "lint": "eslint src test",
     "build": "build src",
-    "prepublishOnly": "npm run build"
-  },
-  "publishConfig": {
-    "directory": "lib"
+    "prepublishOnly": "npm run build",
+    "release": "rollout"
   },
   "prettier": {
     "singleQuote": true
@@ -42,6 +40,7 @@
   },
   "devDependencies": {
     "@4c/build": "^4.0.0",
+    "@4c/rollout": "^4.0.2",
     "@4c/tsconfig": "^0.4.1",
     "@babel/cli": "^7.21.0",
     "@babel/core": "^7.21.0",
@@ -54,7 +53,6 @@
     "jest-environment-jsdom": "^29.5.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "rollout": "^0.1.0",
     "typescript": "^4.9.5"
   },
   "dependencies": {

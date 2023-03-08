@@ -18,6 +18,27 @@ import { uncontrollable } from 'uncontrollable';
 
 ### API
 
+#### `useUncontrolledProp(value, defaultValue, onChange) => [value, onChange]`
+
+A React hook that can be used in place of the above Higher order Component. It
+returns a complete set of `props` which are safe to spread through to a child element.
+
+```js
+import { useUncontrolledProp } from 'uncontrollable';
+
+const UncontrolledCombobox = ({ value, defaultValue, onChange }) => {
+  // filters out defaultValue, defaultOpen and returns controlled
+  // versions of onChange, and onToggle.
+  const [controlledValue, onControlledChange] = useUncontrolledProp(
+    value,
+    defaultValue,
+    onChange
+  );
+
+  return <Checkbox {...controlledProps} />;
+};
+```
+
 #### `useUncontrolled(props, propsHandlerHash) => controlledProps`
 
 A React hook that can be used in place of the above Higher order Component. It
