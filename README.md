@@ -13,40 +13,10 @@ npm i -S uncontrollable
 If you are a bit unsure on the _why_ of this module read the next section first. If you just want to see some real-world examples, check out [React Widgets](https://github.com/jquense/react-widgets) which makes [heavy use of this strategy](https://github.com/jquense/react-widgets/blob/5d1b530cb094cdc72f577fe01abe4a02dd265400/src/Multiselect.jsx#L521).
 
 ```js
-import { uncontrollable } from 'uncontrollable'
+import { uncontrollable } from 'uncontrollable';
 ```
 
 ### API
-
-#### `uncontrollable(Component, propHandlerHash, [methods])`
-
-- `Component`: is a valid react component, such as the result of `createClass`
-- `propHandlerHash`: define the pairs of prop/handlers you want to be uncontrollable, e.g. `{ value: 'onChange'}`
-- `methods`: since uncontrollable wraps your component in another component, methods are not immediately accessible. You can proxy them through by providing the names of the methods you want to continue to expose. **You don't need this if you are using React >= v16.3.0, the ref will automatically be forwarded to the uinderlying component**
-
-For every prop you indicate as uncontrollable, the returned component will also accept an initial, `default` value for that prop. For example, `open` can be left uncontrolled but the initial value can be set via `defaultOpen={true}` if we want it to start open.
-
-```js
-import { uncontrollable } from 'uncontrollable'
-
-const UncontrolledCombobox = uncontrollable(Combobox, {
-  value: 'onChange',
-  open: 'onToggle',
-  searchTerm: 'onSearch', //the current typed value (maybe it filters the dropdown list)
-})
-```
-
-Since uncontrollable creates a new component that wraps your existing one, methods on your underlying component
-won't be immediately accessible. In general this sort of access is not idiomatic React, but it does have its place.
-The third argument of `uncontrollable()` is an optional array of method names you want uncontrollable to "pass through"
-to the original component.
-
-```js
-let UncontrolledForm = uncontrollable(Form, { value: 'onChange' }, ['submit'])
-
-//when you use a ref this will work
-this.refs.myForm.submit()
-```
 
 #### `useUncontrolled(props, propsHandlerHash) => controlledProps`
 
@@ -54,18 +24,18 @@ A React hook that can be used in place of the above Higher order Component. It
 returns a complete set of `props` which are safe to spread through to a child element.
 
 ```js
-import { useUncontrolled } from 'uncontrollable'
+import { useUncontrolled } from 'uncontrollable';
 
-const UncontrolledCombobox = props => {
+const UncontrolledCombobox = (props) => {
   // filters out defaultValue, defaultOpen and returns controlled
   // versions of onChange, and onToggle.
   const controlledProps = useUncontrolled(props, {
     value: 'onChange',
     open: 'onToggle',
-  })
+  });
 
-  return <Checkbox {...controlledProps} />
-}
+  return <Checkbox {...controlledProps} />;
+};
 ```
 
 ### Use Case
@@ -94,16 +64,16 @@ class SimpleDropdown extends React.Component {
     onChange: React.PropTypes.func,
     open: React.PropTypes.bool,
     onToggle: React.PropTypes.func,
-  }
+  };
 
   render() {
     return (
       <div>
         <input
           value={this.props.value}
-          onChange={e => this.props.onChange(e.target.value)}
+          onChange={(e) => this.props.onChange(e.target.value)}
         />
-        <button onClick={e => this.props.onToggle(!this.props.open)}>
+        <button onClick={(e) => this.props.onToggle(!this.props.open)}>
           open
         </button>
         {this.props.open && (
@@ -113,7 +83,7 @@ class SimpleDropdown extends React.Component {
           </ul>
         )}
       </div>
-    )
+    );
   }
 }
 ```
