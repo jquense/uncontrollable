@@ -7,6 +7,7 @@
 ### BREAKING CHANGES
 
 - higher order component removed for just hooks, browser support bumped up to esm compatible
+- dropped support for React 15
 
 # [7.2.0](https://github.com/jquense/uncontrollable/compare/v7.1.1...v7.2.0) (2021-01-25)
 
