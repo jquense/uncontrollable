@@ -27,7 +27,7 @@
     "lint": "eslint src test",
     "build": "build src",
     "prepublishOnly": "npm run build",
-    "release": "rollout"
+    "release": "rollout --conventionalCommits"
   },
   "prettier": {
     "singleQuote": true
@@ -42,6 +42,7 @@
     "@4c/build": "^4.0.0",
     "@4c/rollout": "^4.0.2",
     "@4c/tsconfig": "^0.4.1",
+    "@types/react": ">=18.0.28",
     "@babel/cli": "^7.21.0",
     "@babel/core": "^7.21.0",
     "@babel/preset-react": "^7.18.6",
@@ -54,9 +55,6 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "typescript": "^4.9.5"
-  },
-  "dependencies": {
-    "@types/react": ">=18.0.28"
   },
   "bugs": {
     "url": "https://github.com/jquense/uncontrollable/issues"
