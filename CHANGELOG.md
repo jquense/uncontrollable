@@ -1,3 +1,14 @@
+## [8.0.2](https://github.com/jquense/uncontrollable/compare/v8.0.1...v8.0.2) (2023-05-22)
+
+
+### Bug Fixes
+
+* move types out of deps ([400b834](https://github.com/jquense/uncontrollable/commit/400b834c5cafbc44706170a1ac137dbddf21c27e))
+
+
+
+
+
 # [8.0.0](https://github.com/jquense/uncontrollable/compare/v7.2.0...v8.0.0) (2023-03-08)
 
 ### chore
