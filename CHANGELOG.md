@@ -1,3 +1,14 @@
+## [8.0.4](https://github.com/jquense/uncontrollable/compare/v8.0.3...v8.0.4) (2023-07-28)
+
+
+### Bug Fixes
+
+* types too strict ([2c135fb](https://github.com/jquense/uncontrollable/commit/2c135fbce2dc05f11bbb736a88400aed90d6bbac))
+
+
+
+
+
 ## [8.0.3](https://github.com/jquense/uncontrollable/compare/v8.0.2...v8.0.3) (2023-07-28)
 
 
