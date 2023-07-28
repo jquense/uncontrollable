@@ -1,22 +1,34 @@
 import { useCallback, useRef, useState } from 'react';
 
-export type Handler = (...args: any[]) => any;
+export type Handler<TProp = any> = (prop: TProp, ...args: any[]) => any;
 
 export function defaultKey(key: string) {
   return 'default' + key.charAt(0).toUpperCase() + key.substr(1);
 }
 
-function useUncontrolledProp<TProp, THandler extends Handler = Handler>(
+function useUncontrolledProp<
+  TProp,
+  THandler extends Handler<TProp> = Handler<TProp>
+>(
   propValue: TProp | undefined,
   defaultValue: TProp,
   handler?: THandler
 ): readonly [TProp, THandler];
-function useUncontrolledProp<TProp, THandler extends Handler = Handler>(
+function useUncontrolledProp<
+  TProp,
+  THandler extends Handler<TProp> = Handler<TProp>
+>(
   propValue: TProp | undefined,
   defaultValue?: TProp | undefined,
   handler?: THandler
-): readonly [TProp | undefined, THandler];
-function useUncontrolledProp<TProp, THandler extends Handler = Handler>(
+): readonly [
+  TProp | undefined,
+  (...args: Parameters<THandler>) => ReturnType<THandler> | void
+];
+function useUncontrolledProp<
+  TProp,
+  THandler extends Handler<TProp> = Handler<TProp>
+>(
   propValue: TProp | undefined,
   defaultValue: TProp | undefined,
   handler?: THandler
@@ -40,12 +52,14 @@ function useUncontrolledProp<TProp, THandler extends Handler = Handler>(
   return [
     isProp ? propValue : stateValue,
     useCallback(
-      (value: TProp, ...args: any[]) => {
-        if (handler) handler(value, ...args);
+      (...args: Parameters<THandler>): ReturnType<THandler> | void => {
+        const [value, ...rest] = args;
+        let returnValue = handler?.(value, ...rest);
         setState(value);
+        return returnValue;
       },
       [handler]
-    ) as THandler,
+    ),
   ] as const;
 }
 

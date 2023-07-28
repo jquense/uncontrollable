@@ -24,7 +24,6 @@
   "scripts": {
     "test": "jest",
     "tdd": "jest --watch",
-    "lint": "eslint src test",
     "build": "build src",
     "prepublishOnly": "npm run build",
     "release": "rollout --conventionalCommits"

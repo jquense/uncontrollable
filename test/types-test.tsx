@@ -15,6 +15,30 @@ function Foo(props: Props) {
   );
 }
 
+interface Props2 {
+  value?: string;
+  defaultValue: string | undefined;
+  onChange?(value: string, meta: {}): Promise<void>;
+}
+
+function Foo2(props: Props2) {
+  // $ExpectType [string, (value: string, meta: {}) => void | Promise<void>]
+  const [value, onChange] = useUncontrolledProp(
+    props.value,
+    props.defaultValue,
+    props.onChange
+  );
+
+  const onChangeBad = null as any as (value: number) => void;
+
+  const [value2, onChange2] = useUncontrolledProp(
+    props.value,
+    props.defaultValue,
+    // $ExpectError
+    onChangeBad
+  );
+}
+
 function FooA(props: Props) {
   // $ExpectType { value: string, onChange:  (value: string, meta: {}) => void }
   const a = useUncontrolled<Props, 'defaultValue'>(props, {
