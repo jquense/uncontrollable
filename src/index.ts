@@ -1,23 +1,17 @@
 import { useCallback, useRef, useState } from 'react';
 
-export type Handler<TProp = any> = (prop: TProp, ...args: any[]) => any;
+export type Handler = (value: any, ...args: any[]) => any;
 
 export function defaultKey(key: string) {
   return 'default' + key.charAt(0).toUpperCase() + key.substr(1);
 }
 
-function useUncontrolledProp<
-  TProp,
-  THandler extends Handler<TProp> = Handler<TProp>
->(
+function useUncontrolledProp<TProp, THandler extends Handler = Handler>(
   propValue: TProp | undefined,
   defaultValue: TProp,
   handler?: THandler
 ): readonly [TProp, THandler];
-function useUncontrolledProp<
-  TProp,
-  THandler extends Handler<TProp> = Handler<TProp>
->(
+function useUncontrolledProp<TProp, THandler extends Handler = Handler>(
   propValue: TProp | undefined,
   defaultValue?: TProp | undefined,
   handler?: THandler
@@ -25,10 +19,7 @@ function useUncontrolledProp<
   TProp | undefined,
   (...args: Parameters<THandler>) => ReturnType<THandler> | void
 ];
-function useUncontrolledProp<
-  TProp,
-  THandler extends Handler<TProp> = Handler<TProp>
->(
+function useUncontrolledProp<TProp, THandler extends Handler = Handler>(
   propValue: TProp | undefined,
   defaultValue: TProp | undefined,
   handler?: THandler

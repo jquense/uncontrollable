@@ -28,15 +28,6 @@ function Foo2(props: Props2) {
     props.defaultValue,
     props.onChange
   );
-
-  const onChangeBad = null as any as (value: number) => void;
-
-  const [value2, onChange2] = useUncontrolledProp(
-    props.value,
-    props.defaultValue,
-    // $ExpectError
-    onChangeBad
-  );
 }
 
 function FooA(props: Props) {
