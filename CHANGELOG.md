@@ -1,3 +1,14 @@
+## [8.0.3](https://github.com/jquense/uncontrollable/compare/v8.0.2...v8.0.3) (2023-07-28)
+
+
+### Bug Fixes
+
+* pass throguh return value if present ([38c308a](https://github.com/jquense/uncontrollable/commit/38c308a7e5bd56460aafb2a20b38bdf633ec9350))
+
+
+
+
+
 ## [8.0.2](https://github.com/jquense/uncontrollable/compare/v8.0.1...v8.0.2) (2023-05-22)
 
 
