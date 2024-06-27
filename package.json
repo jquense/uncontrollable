@@ -33,7 +33,7 @@
     "singleQuote": true
   },
   "peerDependencies": {
-    "@types/react": ">=16.14.40",
+    "@types/react": ">=18.0.28",
     "react": ">=16.14.0"
   },
   "peerDependenciesMeta": {
