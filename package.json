@@ -13,19 +13,6 @@
   "license": "MIT",
   "main": "cjs/index.js",
   "module": "lib/index.js",
-  "type": "module",
-  "exports": {
-    ".": {
-      "require": {
-        "types": "./cjs/index.d.ts",
-        "default": "./cjs/index.js"
-      },
-      "import": {
-        "types": "./lib/index.d.ts",
-        "default": "./lib/index.js"
-      }
-    }
-  },
   "keywords": [
     "uncontrolled-component",
     "react-component",
@@ -45,10 +32,6 @@
     "prepublishOnly": "npm run build",
     "release": "rollout --conventionalCommits"
   },
-  "files": [
-    "lib",
-    "cjs"
-  ],
   "prettier": {
     "singleQuote": true
   },
@@ -61,6 +44,7 @@
     "@babel/core": "^7.21.0",
     "@babel/plugin-transform-modules-commonjs": "^7.26.3",
     "@babel/preset-typescript": "^7.21.0",
+    "@monastic.panic/pkg": "../pkg",
     "@testing-library/react": "^14.0.0",
     "@types/react": ">=18.0.28",
     "jsdom": "^25.0.1",
