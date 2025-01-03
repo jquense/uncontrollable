@@ -1,3 +1,19 @@
+# [9.0.0](https://github.com/jquense/uncontrollable/compare/v8.0.4...v9.0.0) (2025-01-03)
+
+
+### Features
+
+* native esm build ([c2cd59b](https://github.com/jquense/uncontrollable/commit/c2cd59b1d5cffe3344e74dd2b76683034a1813bc))
+
+
+### BREAKING CHANGES
+
+* generate simpler real esm code
+
+
+
+
+
 ## [8.0.4](https://github.com/jquense/uncontrollable/compare/v8.0.3...v8.0.4) (2023-07-28)
 
 
