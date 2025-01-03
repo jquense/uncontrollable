@@ -76,11 +76,11 @@ export function useUncontrolled<
       ...rest
     } = result as any;
 
-    const handlerName = config[fieldName];
+    const handlerName = config[fieldName as keyof TProps] as keyof TProps;
     const [value, handler] = useUncontrolledProp(
       propsValue,
       defaultValue,
-      props[handlerName]
+      props[handlerName] as Handler
     );
 
     return {

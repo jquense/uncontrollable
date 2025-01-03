@@ -1,9 +1,23 @@
 {
-  "extends": "@4c/tsconfig/web.json",
   "compilerOptions": {
-    "noImplicitAny": false,
     "rootDir": "src",
-    "declaration": true
+    "skipLibCheck": true,
+    "lib": ["esnext", "dom"],
+    "target": "esnext",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "downlevelIteration": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "stripInternal": true,
+    "noFallthroughCasesInSwitch": true,
+    "resolveJsonModule": true,
+    "strict": true,
+    "jsx": "react-jsx"
   },
   "include": ["src"]
 }

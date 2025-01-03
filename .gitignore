@@ -1,4 +1,5 @@
 lib/
+cjs/
 # Logs
 logs
 *.log

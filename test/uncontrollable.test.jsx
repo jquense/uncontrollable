@@ -1,6 +1,9 @@
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, cleanup } from '@testing-library/react';
 import React from 'react';
 import { useUncontrolled } from '../src';
+import { describe, it, expect, afterEach } from 'vitest'
+
+afterEach(cleanup)
 
 describe('uncontrollable', () => {
   it('should track internally if not specified', () => {
