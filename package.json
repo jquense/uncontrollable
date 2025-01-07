@@ -21,13 +21,31 @@
     "uncontrolled",
     "form"
   ],
+  "files": [
+    "cjs",
+    "lib"
+  ],
+  "type": "module",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "require": {
+        "types": "./cjs/index.d.ts",
+        "default": "./cjs/index.js"
+      },
+      "import": {
+        "types": "./lib/index.d.ts",
+        "default": "./lib/index.js"
+      }
+    }
+  },
   "scripts": {
     "test": "vitest --run --environment jsdom",
     "tdd": "vitest --environment jsdom",
     "build:esm": "babel src --out-dir lib --delete-dir-on-start --extensions '.ts' --ignore='**/*.d.ts'",
     "build:esm:types": "tsc -p . --emitDeclarationOnly --declaration --outDir lib",
     "build:cjs": "babel src --out-dir cjs --env-name cjs --delete-dir-on-start --extensions '.ts'  --ignore='**/*.d.ts' && echo '{\"type\": \"commonjs\"}' > cjs/package.json",
-    "build:cjs:types": "tsc -p . --emitDeclarationOnly --declaration --outDir cjs --module commonjs --moduleResolution node",
+    "build:cjs:types": "tsc -p . --emitDeclarationOnly --declaration --outDir cjs",
     "build": "yarn build:esm && yarn build:esm:types && yarn build:cjs && yarn build:cjs:types",
     "prepublishOnly": "npm run build",
     "release": "rollout --conventionalCommits"
